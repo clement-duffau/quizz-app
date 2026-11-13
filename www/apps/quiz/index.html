@@ -245,9 +245,9 @@ function answer(k){
     const pts = Math.round((100 + Math.round(left / 100)) * mult()); S.score += pts; $('#score').textContent = S.score;
     const plus = document.createElement('span'); plus.className = 'plus'; plus.textContent = '+' + pts; $('#card').appendChild(plus); setTimeout(() => plus.remove(), 1000);
     verdict = ['Bien joué !','Exact !','Bravo !','Dans le mille !','Yes !'][Math.random() * 5 | 0] + (mult() > 1 ? '  Combo ×' + mult() : '');
-    updateStreak(true); confetti(S.streak >= 3 ? 110 : 60);
+    updateStreak(true); confetti(S.streak >= 3 ? 110 : 60); if (window.MQS) MQS.play('ok');
   } else {
-    S.streak = 0; updateStreak(); verdict = k === -1 ? 'Temps écoulé !' : 'Raté…'; S.misses.push(q);
+    S.streak = 0; updateStreak(); verdict = k === -1 ? 'Temps écoulé !' : 'Raté…'; S.misses.push(q); if (window.MQS) MQS.play('bad');
     $('#card').classList.add('shake'); if (navigator.vibrate) try { navigator.vibrate(120); } catch(e){}
   }
   remember(q, ok);
@@ -260,7 +260,7 @@ function answer(k){
 }
 function next(){ if (S.i < S.qs.length - 1) { S.i++; renderQ(); } else finish(); }
 function finish(){
-  clearInterval(timerId); show('end');
+  clearInterval(timerId); show('end'); if (window.MQS) MQS.play('fin');
   const g = S.good, n = S.qs.length;
   $('#endEmo').textContent = g === n ? '🏆' : g >= n * .6 ? '🎉' : '💪';
   $('#rank').textContent = g === n ? 'Sans faute !' : g >= n * .8 ? 'Grosse tête 🎓' : g >= n * .6 ? 'Pas mal du tout 👍' : g >= n * .4 ? 'Peut mieux faire 🙂' : 'On retente ?';

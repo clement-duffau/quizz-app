@@ -382,6 +382,8 @@ function speak(text, rate){
     speechSynthesis.speak(u);
   } catch(e) {}
 }
+const sfx = n => { if (window.MQS) MQS.play(n); };
+const later = f => setTimeout(f, window.MQS && MQS.on() ? 550 : 0);
 const ICO_SPK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4.03v8.06A4.5 4.5 0 0 0 16.5 12zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>';
 const spkBtn = (t, cls='', rate=0.85, label='Écouter') =>
   `<button class="spk ${cls}" data-act="say" data-say="${esc(t)}" data-rate="${rate}" aria-label="${label}">${ICO_SPK}</button>`;
@@ -594,7 +596,8 @@ function check(){
   if (ok) { if (!q.retry) S.firstTry++; }
   else if (!q.retry) S.steps.push({...q, retry:true, options:shuffle(q.options)});
   persist();
-  if (q.after) speak(q.after, 0.85);
+  sfx(ok ? 'ok' : 'bad');
+  if (q.after) later(() => speak(q.after, 0.85));
   render();
 }
 function checkBuild(q){
@@ -604,7 +607,8 @@ function checkBuild(q){
   S.checked = true; S.ok = ok;
   if (ok) { if (!q.retry) S.firstTry++; }
   else if (!q.retry) S.steps.push({...q, retry:true, bank:shuffle(q.bank)});
-  speak(q.after, 0.85);
+  sfx(ok ? 'ok' : 'bad');
+  later(() => speak(q.after, 0.85));
   render();
 }
 function tokTap(i){ if (S.checked || S.b.pick.includes(i)) return; S.b.pick.push(i); render(); }
@@ -620,11 +624,12 @@ function matchTap(side, k){
       if (m.got.size === st.pairs.length) {
         S.checked = true; S.ok = m.wrong === 0;
         if (S.ok && !st.retry) S.firstTry++;
+        sfx('ok');
         (st.tag || []).forEach(c => { save.m[c] = (save.m[c]||0) + 1; });
         persist();
       }
     } else {
-      m.wrong++; m.flash = {l:m.selL, r:m.selR}; m.selL = m.selR = null;
+      m.wrong++; m.flash = {l:m.selL, r:m.selR}; m.selL = m.selR = null; sfx('bad');
       setTimeout(() => { if (S && S.m === m) { m.flash = null; render(); } }, 550);
     }
   }
@@ -633,7 +638,7 @@ function matchTap(side, k){
 function next(){
   S.done++; S.pos++;
   if (S.pos >= S.steps.length) {
-    S.phase = 'end';
+    S.phase = 'end'; sfx('fin');
     if (S.kind === 'lesson') { save.done[S.idx] = true; persist(); }
     if (S.kind === 'course') { csave.done[CL[S.idx].id] = true; cpersist(); }
     if (window.MQJ) MQJ.log({ a: 'russe', m: S.kind === 'lesson' ? 'leçon ' + (S.idx + 1) : S.kind === 'course' ? CL[S.idx].t : S.mode, g: S.firstTry, n: S.total });

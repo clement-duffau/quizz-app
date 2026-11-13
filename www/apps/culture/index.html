@@ -452,11 +452,13 @@ function answer(k) {
     verdict = ["Bien joué !","Exact !","Bravo !","Dans le mille !","Yes !"][Math.random() * 5 | 0] + (multiplier() > 1 ? "  Combo ×" + multiplier() : "");
     updateStreak(true);
     confetti(S.streak >= 3 ? 110 : 60);
+    if (window.MQS) MQS.play('ok');
     if (q.kind === "acro") document.getElementById("qtiles")?.classList.add("party");
   } else {
     S.streak = 0; updateStreak();
     verdict = k === -1 ? "Temps écoulé !" : "Raté…";
     S.misses.push(q);
+    if (window.MQS) MQS.play('bad');
     $("#card").classList.add("shake");
     if (navigator.vibrate) try { navigator.vibrate(120); } catch(e){}
   }
@@ -482,6 +484,7 @@ function next() {
 function finish() {
   clearInterval(timerId);
   show("end");
+  if (window.MQS) MQS.play('fin');
   const g = S.good;
   const rank = g === 10 ? "Encyclopédie vivante 🧠" : g >= 8 ? "Grosse tête 🎓" : g >= 6 ? "Pas mal du tout 👍" : g >= 4 ? "Peut mieux faire 🙂" : "On retente ? 💪";
   tiles($("#endTiles"), g === 10 ? "PARFAIT" : g >= 6 ? "BRAVO" : "FINI");

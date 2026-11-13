@@ -25,6 +25,7 @@ Et aussi :
 - **Mon profil** (carte en haut de l'accueil) : pseudo et avatar, niveau, série de jours 🔥, objectif du jour,
   graphique jour après jour, calendrier, progression par quiz, badges et dernières parties.
 - **À revoir** : dans les quiz à modes, les questions ratées reviennent jusqu'à ce qu'elles soient réussies.
+- **Effets sonores** (bonne réponse, erreur, fin de partie) dans tous les quiz, à couper avec le bouton 🔔 en haut à droite.
 - **Photos** des équipements militaires (Wikimedia Commons, crédits dans le catalogue) et un quiz « Photos seulement ».
 
 ## Installer l'appli sur le téléphone

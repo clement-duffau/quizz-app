@@ -640,6 +640,7 @@ function act(a,el){
       else f.again.push(id);
       f.i++;f.flipped=false;
       if(f.i===f.deck.length&&window.MQJ)MQJ.log({a:'militaire',m:'fiches',g:f.sues,n:f.deck.length});
+      if(f.i===f.deck.length&&window.MQS)MQS.play('fin');
       render(f.i<f.deck.length?'fc':null);break;
     case 'redoAgain':fcStart(f.again.slice());render('fc');break;
     case 'fcRestart':fcStart();render('fc');break;
@@ -657,6 +658,7 @@ function act(a,el){
       if(!cur||!cur.choices[i])break;
       q.sel=i;
       if(cur.choices[i].ok)q.score++;else q.missed.push(cur);
+      if(window.MQS)MQS.play(cur.choices[i].ok?'ok':'bad');
       render('next');
       {const r=document.querySelector('.reveal');if(r&&r.scrollIntoView)r.scrollIntoView({block:'nearest'});}
       break;}
@@ -667,6 +669,7 @@ function act(a,el){
         const pct=Math.round(q.score/q.qs.length*100);
         if(pct>best){best=pct;store.set('mm_best_v1',best);}
         if(window.MQJ)MQJ.log({a:'militaire',m:'quiz',g:q.score,n:q.qs.length,s:pct});
+        if(window.MQS)MQS.play('fin');
       }else{q.i++;q.sel=null;}
       render();window.scrollTo({top:0});break;}
     case 'missedToCards':{
