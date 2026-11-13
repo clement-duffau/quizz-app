@@ -7,22 +7,53 @@
   var cap = window.Capacitor;
   var native = !!(cap && cap.isNativePlatform && cap.isNativePlatform());
 
+  // ---------- Sortie audio tenue éveillée ----------
+  // Android met la sortie audio en veille après quelques secondes de silence et, au réveil,
+  // monte le volume progressivement : le premier mot prononcé sortait trop faible.
+  // Dès qu'on touche l'écran, on joue un souffle inaudible (~ -70 dB) qui garde la sortie éveillée ;
+  // il s'arrête après 25 s sans toucher l'écran ou quand l'appli passe en arrière-plan.
+  var AC = window.AudioContext || window.webkitAudioContext, actx = null, idleT = null, wokeAt = 0;
+  function wake() {
+    if (!AC) return;
+    try {
+      if (!actx) {
+        actx = new AC();
+        var buf = actx.createBuffer(1, actx.sampleRate, actx.sampleRate), d = buf.getChannelData(0);
+        for (var i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * 0.0003;
+        var src = actx.createBufferSource(); src.buffer = buf; src.loop = true; src.connect(actx.destination); src.start();
+        wokeAt = Date.now();
+      } else if (actx.state !== 'running') { actx.resume(); wokeAt = Date.now(); }
+    } catch (e) {}
+    clearTimeout(idleT);
+    idleT = setTimeout(function () { try { if (actx) actx.suspend(); } catch (e) {} }, 25000);
+  }
+  // Délai à respecter si la sortie vient juste d'être réveillée
+  function warm() { wake(); return Math.max(0, 350 - (Date.now() - wokeAt)); }
+  document.addEventListener('pointerdown', wake, true);
+  document.addEventListener('keydown', wake, true);
+  document.addEventListener('visibilitychange', function () { if (document.hidden && actx) { try { actx.suspend(); } catch (e) {} } });
+
   // ---------- Synthèse vocale native ----------
   var plug = function (n) { try { return cap.registerPlugin ? cap.registerPlugin(n) : cap.Plugins[n]; } catch (e) { return cap.Plugins && cap.Plugins[n]; } };
   var TTS = native && plug('TextToSpeech');
   var APP = native && plug('App');
   if (TTS) {
+    var turn = 0;
     var Utter = function (text) { this.text = text || ''; this.lang = ''; this.rate = 1; this.pitch = 1; this.volume = 1; this.voice = null; };
     var synth = {
       speaking: false, pending: false, paused: false, onvoiceschanged: null,
       getVoices: function () { return [{ name: 'Android', lang: 'ru-RU', localService: true, default: true, voiceURI: 'android-ru' }]; },
       speak: function (u) {
         synth.speaking = true;
-        TTS.speak({ text: u.text, lang: u.lang || 'fr-FR', rate: u.rate || 1, pitch: u.pitch || 1, volume: u.volume == null ? 1 : u.volume, queueStrategy: 0 })
-          .catch(function () {})
-          .then(function () { synth.speaking = false; if (typeof u.onend === 'function') u.onend(); });
+        var id = ++turn;
+        setTimeout(function () {
+          if (id !== turn) return;   // annulé ou remplacé pendant le réveil de la sortie audio
+          TTS.speak({ text: u.text, lang: u.lang || 'fr-FR', rate: u.rate || 1, pitch: u.pitch || 1, volume: u.volume == null ? 1 : u.volume, queueStrategy: 0 })
+            .catch(function () {})
+            .then(function () { if (id === turn) synth.speaking = false; if (typeof u.onend === 'function') u.onend(); });
+        }, warm());
       },
-      cancel: function () { synth.speaking = false; try { TTS.stop(); } catch (e) {} },
+      cancel: function () { synth.speaking = false; turn++; try { TTS.stop(); } catch (e) {} },
       pause: function () {}, resume: function () {}
     };
     try {
@@ -42,7 +73,8 @@
     try {
       var a = cache[n] || (cache[n] = new Audio(base + FILES[n]));
       a.volume = 0.7; a.currentTime = 0;
-      var p = a.play(); if (p && p.catch) p.catch(function () {});
+      var go = function () { var p = a.play(); if (p && p.catch) p.catch(function () {}); };
+      var w = warm(); if (w) setTimeout(go, w); else go();
     } catch (e) {}
   }
   window.MQS = { play: play, on: sfxOn, set: sfxSet };
