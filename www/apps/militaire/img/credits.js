@@ -1,6 +1,14 @@
 /* Photos des équipements (Wikimedia Commons) : fichier, taille, auteur, licence, page d’origine.
    Généré à partir des métadonnées de Commons. */
 window.MM_IMG = {
+"2S19 Msta-S": {
+"f": "2s19-msta-s.jpg",
+"w": 640,
+"h": 480,
+"a": "Zala",
+"l": "CC BY-SA 4.0",
+"u": "https://commons.wikimedia.org/wiki/File:2S19_Msta-S_PM_MWB_09.jpg"
+},
 "A400M Atlas": {
 "f": "a400m-atlas.jpg",
 "w": 720,
@@ -32,6 +40,14 @@ window.MM_IMG = {
 "a": "Defence Research and Development Organisation",
 "l": "GODL-India",
 "u": "https://commons.wikimedia.org/wiki/File:Arjun_MK1A_field_trials.jpg"
+},
+"Arleigh Burke (Flight IIA)": {
+"f": "arleigh-burke-flight-iia.jpg",
+"w": 682,
+"h": 480,
+"a": "Mass Communication Specialist Seaman Apprentice Matthew D. Williams",
+"l": "Public domain",
+"u": "https://commons.wikimedia.org/wiki/File:USS_Oscar_Austin_(DDG_79).jpg"
 },
 "B-2 Spirit": {
 "f": "b-2-spirit.jpg",
@@ -113,6 +129,14 @@ window.MM_IMG = {
 "l": "OGL v1.0",
 "u": "https://commons.wikimedia.org/wiki/File:Challenger_2_Main_Battle_Tank_patrolling_outside_Basra,_Iraq_MOD_45148325.jpg"
 },
+"Charles de Gaulle (R91)": {
+"f": "charles-de-gaulle-r91.jpg",
+"w": 720,
+"h": 479,
+"a": "U.S. Navy photo by Petty Officer 1st Class Theron J. Godbold",
+"l": "Public domain",
+"u": "https://commons.wikimedia.org/wiki/File:French_aircraft_carrier_Charles_de_Gaulle_(R91)_underway_in_the_Mediterranean_Sea_on_25_October_2016.JPG"
+},
 "Eurofighter Typhoon": {
 "f": "eurofighter-typhoon.jpg",
 "w": 720,
@@ -120,6 +144,14 @@ window.MM_IMG = {
 "a": "Chris Lofting",
 "l": "GFDL 1.2",
 "u": "https://commons.wikimedia.org/wiki/File:RAF_Eurofighter_EF-2000_Typhoon_F2_Lofting-1.jpg"
+},
+"Exocet MM40 Block 3": {
+"f": "exocet-mm40-block-3.jpg",
+"w": 720,
+"h": 405,
+"a": "Georgie1235",
+"l": "CC BY 4.0",
+"u": "https://commons.wikimedia.org/wiki/File:Exocet_MM40_Block_3_Launchers.jpg"
 },
 "F-16C Fighting Falcon": {
 "f": "f-16c-fighting-falcon.jpg",
@@ -161,6 +193,14 @@ window.MM_IMG = {
 "l": "CC BY-SA 3.0",
 "u": "https://commons.wikimedia.org/wiki/File:IDF_Iron_Dome_2021.jpg"
 },
+"Iskander-M": {
+"f": "iskander-m.jpg",
+"w": 720,
+"h": 465,
+"a": "Boevaya mashina",
+"l": "CC BY-SA 4.0",
+"u": "https://commons.wikimedia.org/wiki/File:9P78-1_TEL_Iskander-M.JPG"
+},
 "J-20": {
 "f": "j-20.jpg",
 "w": 720,
@@ -184,6 +224,14 @@ window.MM_IMG = {
 "a": "대한민국 국군 Republic of Korea Armed Forces",
 "l": "CC BY-SA 2.0",
 "u": "https://commons.wikimedia.org/wiki/File:2011.2.17_%EC%9C%A1%EA%B5%B06%ED%8F%AC%EB%B3%91%EC%97%AC%EB%8B%A8_k-9,k-55_%EC%9E%90%EC%A3%BC%ED%8F%AC%EC%82%AC%EA%B2%A9_(7633864346).jpg"
+},
+"Ka-52 Alligator": {
+"f": "ka-52-alligator.jpg",
+"w": 720,
+"h": 480,
+"a": "Роман Дергунов",
+"l": "CC BY-SA 4.0",
+"u": "https://commons.wikimedia.org/wiki/File:Ka-52_at_an_air_show_in_Voronezh_2014.jpg"
 },
 "Kalibr (3M14)": {
 "f": "kalibr-3m14.jpg",
@@ -249,6 +297,14 @@ window.MM_IMG = {
 "l": "Public domain",
 "u": "https://commons.wikimedia.org/wiki/File:US_M2A1_Bradley_deployed_to_Saudi_Arabia_during_Operation_Desert_Shield.jpg"
 },
+"M51": {
+"f": "m51.jpg",
+"w": 720,
+"h": 407,
+"a": "Direction générale de l'armement",
+"l": "Licence Ouverte",
+"u": "https://commons.wikimedia.org/wiki/File:M51_PFI.jpg"
+},
 "MGM-140 ATACMS": {
 "f": "mgm-140-atacms.jpg",
 "w": 320,
@@ -296,6 +352,22 @@ window.MM_IMG = {
 "a": "Anna Zvereva from Tallinn, Estonia",
 "l": "CC BY-SA 2.0",
 "u": "https://commons.wikimedia.org/wiki/File:Russian_Air_Force,_RF-13489,_Mil_Mi-28NM_(49581609382).jpg"
+},
+"MiG-29": {
+"f": "mig-29.jpg",
+"w": 720,
+"h": 405,
+"a": "Julian Herzog (Website)",
+"l": "CC BY 4.0",
+"u": "https://commons.wikimedia.org/wiki/File:105_Polish_Air_Force_MiG-29A_Fulcrum_ILA_Berlin_2016_10.jpg"
+},
+"Mirage 2000C": {
+"f": "mirage-2000c.jpg",
+"w": 640,
+"h": 480,
+"a": "SRA GREG L. DAVIS, USAF",
+"l": "Public domain",
+"u": "https://commons.wikimedia.org/wiki/File:Mirage_2000C_in-flight_2_(cropped).jpg"
 },
 "Puma": {
 "f": "puma.jpg",
@@ -353,6 +425,14 @@ window.MM_IMG = {
 "l": "CC BY 4.0",
 "u": "https://commons.wikimedia.org/wiki/File:2023_IRGC_Aerospace_Force_achievements_Exhibition_in_Qom_(33).jpg"
 },
+"Storm Shadow / SCALP": {
+"f": "storm-shadow-scalp.jpg",
+"w": 720,
+"h": 287,
+"a": "Copyright © 2007 David Monniaux",
+"l": "CC BY-SA 3.0",
+"u": "https://commons.wikimedia.org/wiki/File:Storm_Shadow_p1220865.jpg"
+},
 "Su-35S": {
 "f": "su-35s.jpg",
 "w": 720,
@@ -369,6 +449,14 @@ window.MM_IMG = {
 "l": "CC BY-SA 2.0",
 "u": "https://commons.wikimedia.org/wiki/File:Sukhoi_Design_Bureau,_054,_Sukhoi_T-50_(Su-57_prototype)_(49581303977).jpg"
 },
+"Suffren (Barracuda)": {
+"f": "suffren-barracuda.jpg",
+"w": 720,
+"h": 405,
+"a": "Xavier Grolet",
+"l": "CC BY-SA 4.0",
+"u": "https://commons.wikimedia.org/wiki/File:Suffren_at_Cape_Brun_off_Toulon_on_26_July_2020.jpg"
+},
 "T-90M": {
 "f": "t-90m.jpg",
 "w": 720,
@@ -383,7 +471,7 @@ window.MM_IMG = {
 "h": 448,
 "a": "Alan Lebeda",
 "l": "CC BY-SA 4.0",
-"u": "https://commons.wikimedia.org/wiki/File:20170810034242!Eurocopter_EC-665_Tiger_UHT,_Germany_-_Army_AN1547188_(2).jpg"
+"u": "https://commons.wikimedia.org/wiki/File:Eurocopter_EC-665_Tiger_UHT,_Germany_-_Army_AN1547188_(2).jpg"
 },
 "Tu-160 « Blackjack »": {
 "f": "tu-160-blackjack.jpg",
@@ -393,6 +481,14 @@ window.MM_IMG = {
 "l": "CC BY-SA 3.0",
 "u": "https://commons.wikimedia.org/wiki/File:Tupolev_Tu-160_RF-94109.jpg"
 },
+"Type 055 (Renhai)": {
+"f": "type-055-renhai.jpg",
+"w": 720,
+"h": 266,
+"a": "日本防衛省・統合幕僚監部",
+"l": "CC BY 4.0",
+"u": "https://commons.wikimedia.org/wiki/File:PLANS_Nanchang_(DDG-101)_20210825.jpg"
+},
 "Type 10": {
 "f": "type-10.jpg",
 "w": 720,
@@ -400,6 +496,22 @@ window.MM_IMG = {
 "a": "T.Goto",
 "l": "Public domain",
 "u": "https://commons.wikimedia.org/wiki/File:Type10MBT.jpg"
+},
+"Type 212A": {
+"f": "type-212a.jpg",
+"w": 720,
+"h": 480,
+"a": "Bundeswehr-Fotos",
+"l": "CC BY 2.0",
+"u": "https://commons.wikimedia.org/wiki/File:Unterseeboot_U-32.jpg"
+},
+"Type 45 (Daring)": {
+"f": "type-45-daring.jpg",
+"w": 720,
+"h": 340,
+"a": "Tony Hisgett from Birmingham, UK",
+"l": "CC BY 2.0",
+"u": "https://commons.wikimedia.org/wiki/File:HMS_Daring_D32_(1).jpg"
 },
 "Type 99A": {
 "f": "type-99a.jpg",
@@ -416,6 +528,14 @@ window.MM_IMG = {
 "a": "Bellona Foundation?",
 "l": "Attribution",
 "u": "https://commons.wikimedia.org/wiki/File:Typhoon3.jpg"
+},
+"USS Gerald R. Ford (CVN-78)": {
+"f": "uss-gerald-r-ford-cvn-78.jpg",
+"w": 720,
+"h": 480,
+"a": "U.S. Navy photo by Mass Communication Specialist 2nd Class Jackson Adkins",
+"l": "Public domain",
+"u": "https://commons.wikimedia.org/wiki/File:USS_Gerald_R._Ford_(CVN-78)_underway_in_the_Atlantic_Ocean_on_9_October_2022_(221009-N-TL968-1248).JPG"
 },
 "VBCI": {
 "f": "vbci.jpg",

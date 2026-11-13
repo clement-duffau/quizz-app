@@ -348,7 +348,7 @@ const IMG=window.MM_IMG||{};
 const hasImg=it=>!!IMG[it.n];
 function photo(it,cls){
   const p=IMG[it.n];if(!p)return '';
-  return `<figure class="ph ${cls||''}"><img src="img/${esc(p.f)}" width="${p.w}" height="${p.h}" alt="Photo : ${esc(it.n)}" decoding="async" onerror="this.parentNode.remove()">
+  return `<figure class="ph ${cls||''}"><img src="img/${esc(p.f)}" width="${p.w}" height="${p.h}" style="aspect-ratio:${Math.max(p.w/p.h,1.5).toFixed(3)}" alt="Photo : ${esc(it.n)}" decoding="async" onerror="this.parentNode.remove()">
     <figcaption>Photo : ${esc(p.a||'auteur inconnu')}${p.l?' · '+esc(p.l):''} · Wikimedia Commons</figcaption></figure>`;
 }
 const cname=it=>COUNTRIES[it.c].n;
