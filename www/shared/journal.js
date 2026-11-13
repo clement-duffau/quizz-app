@@ -13,16 +13,19 @@
   var APPS = [
     { id: 'culture',   g: 'mine',  href: 'apps/culture/index.html',   em: '🧠', t: 'Culture G & acronymes', s: 'HDMI, LASER, géo, histoire…', c: '#3B2EF0' },
     { id: 'militaire', g: 'mine',  href: 'apps/militaire/index.html', em: '🛡️', t: 'Matériel militaire', s: 'Fiches, photos et quiz', c: '#1F5673' },
-    { id: 'russe',     g: 'mine',  href: 'apps/russe/index.html',     em: 'Я', t: 'Alphabet russe', s: 'Lettres et prononciation', c: '#2456D6' },
+    { id: 'russe',     g: 'mine',  href: 'apps/russe/index.html',     em: 'Я', t: 'Russe', s: 'Alphabet, mots et phrases', c: '#2456D6' },
     { id: 'drapeaux',  g: 'more',  href: 'apps/quiz/index.html?t=drapeaux', em: '🚩', t: 'Drapeaux & capitales', s: '97 pays, 3 modes', c: '#D6332B' },
     { id: 'sciences',  g: 'more',  href: 'apps/quiz/index.html?t=sciences', em: '🔭', t: 'Sciences & espace', s: 'Planètes, chimie, unités', c: '#5B3FD9' },
     { id: 'tech',      g: 'more',  href: 'apps/quiz/index.html?t=tech',     em: '💡', t: 'Marques & tech', s: 'Fondateurs et origines', c: '#0F8A7E' },
     { id: 'histoire',  g: 'more',  href: 'apps/quiz/index.html?t=histoire', em: '⏳', t: 'Histoire & dates', s: 'De Alésia à l’euro', c: '#B5522A' },
-    { id: 'geo',       g: 'fresh', href: 'apps/quiz/index.html?t=geo',      em: '🗺️', t: 'Géographie', s: 'Fleuves, sommets, records', c: '#2F7D32' },
-    { id: 'nature',    g: 'fresh', href: 'apps/quiz/index.html?t=nature',   em: '🐾', t: 'Animaux & nature', s: 'Records, petits et cris', c: '#C2410C' },
-    { id: 'sport',     g: 'fresh', href: 'apps/quiz/index.html?t=sport',    em: '⚽', t: 'Sport', s: 'Règles, records, légendes', c: '#0E7490' },
-    { id: 'langue',    g: 'fresh', href: 'apps/quiz/index.html?t=langue',   em: '🗣️', t: 'Langue française', s: 'Expressions et pièges', c: '#9D174D' },
-    { id: 'aviation',  g: 'fresh', href: 'apps/quiz/index.html?t=aviation', em: '✈️', t: 'Aviation & espace', s: 'Pionniers, avions, fusées', c: '#334155' }
+    { id: 'geo',       g: 'more',  href: 'apps/quiz/index.html?t=geo',      em: '🗺️', t: 'Géographie', s: 'Fleuves, sommets, records', c: '#2F7D32' },
+    { id: 'nature',    g: 'more',  href: 'apps/quiz/index.html?t=nature',   em: '🐾', t: 'Animaux & nature', s: 'Records, petits et cris', c: '#C2410C' },
+    { id: 'sport',     g: 'more',  href: 'apps/quiz/index.html?t=sport',    em: '⚽', t: 'Sport', s: 'Règles, records, légendes', c: '#0E7490' },
+    { id: 'langue',    g: 'more',  href: 'apps/quiz/index.html?t=langue',   em: '🗣️', t: 'Langue française', s: 'Expressions et pièges', c: '#9D174D' },
+    { id: 'aviation',  g: 'more',  href: 'apps/quiz/index.html?t=aviation', em: '✈️', t: 'Aviation & espace', s: 'Pionniers, avions, fusées', c: '#334155' },
+    { id: 'mythologie', g: 'fresh', href: 'apps/quiz/index.html?t=mythologie', em: '🏛️', t: 'Mythologies', s: 'Grecs, Vikings, Égypte', c: '#6D28D9' },
+    { id: 'arts',      g: 'fresh', href: 'apps/quiz/index.html?t=arts',     em: '🎨', t: 'Arts & musique', s: 'Peintres, compositeurs, chansons', c: '#BE185D' },
+    { id: 'cuisine',   g: 'fresh', href: 'apps/quiz/index.html?t=cuisine',  em: '🍽️', t: 'Gastronomie', s: 'Spécialités et cuisines du monde', c: '#B45309' }
   ];
 
   function read(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }

@@ -6,7 +6,7 @@ Appli Android qui regroupe mes quiz :
 |---|---|
 | 🧠 Culture G & acronymes | 38 acronymes, 98 questions de culture générale, chrono et combos |
 | 🛡️ Matériel militaire | 69 équipements : fiches chiffrées avec photo, quiz, catalogue |
-| Я Alphabet russe | 7 leçons, 33 lettres, prononciation (voix Android) |
+| Я Russe | L'alphabet (7 leçons), puis 15 leçons façon Duolingo : 133 mots avec accent tonique et prononciation, 65 phrases à assembler, écoute, paires (voix Android) |
 | 🚩 Drapeaux & capitales | 97 pays : drapeaux, capitales, capitale → pays |
 | 🔭 Sciences & espace | Espace, chimie, physique & unités, vivant |
 | 💡 Marques & tech | Fondateurs, dates clés, origine des noms, pays d'origine |
@@ -16,6 +16,9 @@ Appli Android qui regroupe mes quiz :
 | ⚽ Sport | Règles, légendes, grandes compétitions |
 | 🗣️ Langue française | Expressions, pièges d'orthographe, mots et origines |
 | ✈️ Aviation & espace | Pionniers, avions et radio, conquête spatiale |
+| 🏛️ Mythologies | Dieux grecs et romains, héros et créatures, Vikings, Égypte et ailleurs |
+| 🎨 Arts & musique | Peinture et sculpture, musique classique, chanson, pop et rock |
+| 🍽️ Gastronomie | Spécialités françaises, cuisines du monde, produits et techniques |
 
 Et aussi :
 
@@ -47,6 +50,7 @@ www/                      l'appli web (ce que contient l'APK)
   apps/profil/index.html  page profil et progression
   apps/culture|militaire|russe/index.html   les quiz existants (fichiers uniques)
   apps/militaire/img/     photos des équipements + credits.js
+  apps/russe/cours.js     leçons de russe après l'alphabet (mots, phrases, astuces)
   apps/quiz/index.html    moteur commun des nouveaux quiz (?t=drapeaux…)
   apps/quiz/data/*.js     les questions de chaque nouveau quiz
   shared/shell.js         barre « ‹ Mes Quiz », bouton retour Android, voix native

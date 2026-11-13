@@ -87,7 +87,7 @@ const bestOf = prefix => keys().filter(k => k.startsWith(prefix)).reduce((m, k) 
 const ST = {
   culture: () => { const b = bestOf('quizcult-best-'); return b ? '🏆 ' + b : ''; },
   militaire: () => { const k = (get('mm_known_v1') || []).length; const b = get('mm_best_v1'); return k ? k + ' fiches sues' : b ? '🏆 ' + b + ' %' : ''; },
-  russe: () => { const s = get('azbuka_alphabet_v1'); const n = s && s.done ? Object.keys(s.done).length : 0; return n ? n + '/7 leçons' : ''; }
+  russe: () => { const s = get('azbuka_alphabet_v1'), c = get('ru_course_v1'); const n = (s && s.done ? Object.keys(s.done).length : 0) + (c && c.done ? Object.keys(c.done).length : 0); return n ? n + ' leçons' : ''; }
 };
 const APPS = MQJ.APPS;
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));

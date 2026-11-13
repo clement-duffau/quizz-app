@@ -3,12 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Азбука — apprendre l'alphabet russe</title>
-<meta name="mq-title" content="Alphabet russe">
+<title>Русский — apprendre le russe</title>
+<meta name="mq-title" content="Russe">
 <link rel="stylesheet" href="../../shared/fonts/fonts.css">
 <script src="../../shared/capacitor.js"></script>
 <script src="../../shared/shell.js"></script>
 <script src="../../shared/journal.js"></script>
+<script src="cours.js"></script>
 <style>
 :root{
   --bg:#edf2f8;--card:#ffffff;--ink:#16213a;--muted:#5d6985;--line:#d9e0ed;--line-d:#c2cce0;
@@ -198,6 +199,37 @@ h1,h2,h3,p{margin:0}
 @keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
 .sheet .close{display:block;margin-left:auto;margin-bottom:-6px}
 
+/* ---------- Cours (unités après l'alphabet) ---------- */
+.unit{width:100%;border-radius:20px;background:var(--uc,var(--pri));color:#fff;padding:12px 16px;margin:26px 0 4px;box-shadow:0 5px 0 color-mix(in srgb,var(--uc,var(--pri)) 60%,#000)}
+.unit:first-child{margin-top:4px}
+.unit small{display:block;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.85}
+.unit b{display:block;font-size:19px;font-weight:800}
+.unit span{display:block;font-size:13px;opacity:.9}
+.node.c{background:var(--uc);box-shadow:0 7px 0 color-mix(in srgb,var(--uc) 60%,#000);font-size:34px}
+.node-wrap:active .node.c{box-shadow:0 2px 0 color-mix(in srgb,var(--uc) 60%,#000)}
+.node.c.done{background:var(--gold);box-shadow:0 7px 0 var(--gold-d)}
+.node-label .words{display:block;font-size:15px;font-weight:600;color:var(--uc,var(--pri))}
+.wcard{text-align:center;padding:8px 0 0}
+.wcard .wem{font-size:64px;line-height:1.1}
+.wcard .wru{font-size:46px;font-weight:800;line-height:1.15;margin-top:6px;word-break:break-word}
+.wcard .wph{font-size:18px;color:var(--pri);font-weight:700;margin-top:4px}
+.wcard .wfr{font-size:20px;margin-top:10px}
+.wcard .btns{display:flex;justify-content:center;gap:12px;margin-top:16px}
+.tag-new{display:inline-block;background:var(--gold);color:#3b2a00;font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:3px 10px}
+.tipcard{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:18px 16px;margin-top:6px}
+.tipcard .ti{font-size:44px}
+.tipcard h3{font-size:20px;margin:6px 0 8px}
+.tipcard p{font-size:16.5px;line-height:1.5}
+.say-row{display:flex;align-items:center;gap:12px;background:var(--card);border:2px solid var(--line);border-radius:18px;padding:12px 14px;margin:6px 0 18px}
+.say-row .tx{flex:1;min-width:0;font-size:22px;font-weight:700;line-height:1.3}
+.say-row .tx small{display:block;font-size:14px;font-weight:600;color:var(--pri);margin-top:2px}
+.ans{min-height:64px;border-bottom:2px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;padding:4px 0 12px;margin-bottom:16px}
+.bank{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.tok{background:var(--card);border:2px solid var(--line);border-bottom-width:4px;border-radius:12px;padding:8px 13px;font-size:18px;font-weight:600;cursor:pointer;min-height:46px}
+.tok:active:not(:disabled){transform:translateY(2px);border-bottom-width:2px}
+.tok.ghost{color:transparent;background:var(--line);border-color:var(--line);cursor:default}
+.tok:disabled{cursor:default}
+.mt.w{font-size:17px;font-weight:600;padding:6px 8px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:380px){.big-letter{font-size:88px}.bigtxt{font-size:60px}}
 </style>
@@ -298,6 +330,21 @@ const WORDS = [];
   EXTRA.forEach(w => add(...w));
 }
 const cumSet = i => new Set(LETTERS.filter(x => x.lesson <= i).map(x => x.l));
+
+// Cours : unités après l'alphabet (données dans cours.js ; « + » = accent tonique)
+const acc = s => String(s).replace(/\+/g, '\u0301');
+const plain = s => String(s).replace(/\+/g, '');
+const COURSE = (window.RU_COURSE || []).map((u, ui) => ({ ...u, ui, lessons: u.lessons.map(l => ({ ...l, ui,
+  words: l.words.map(w => ({ ru:w[0], ph:w[1], fr:w[2], em:w[3] || '' })),
+  phrases: l.phrases.map(p => ({ ru:p[0], fr:p[1], ph:p[2] })) })) }));
+const CL = COURSE.flatMap(u => u.lessons);
+CL.forEach((l, k) => { l.k = k; });
+const CKEY = 'ru_course_v1';
+let csave = { done:{} };
+try { const r = localStorage.getItem(CKEY); if (r) Object.assign(csave, JSON.parse(r)); } catch(e) {}
+const cpersist = () => { try { localStorage.setItem(CKEY, JSON.stringify(csave)); } catch(e) {} };
+const cWordsUpTo = k => CL.slice(0, k + 1).flatMap(l => l.words);
+const cPhrasesUpTo = k => CL.slice(0, k + 1).flatMap(l => l.phrases);
 const wordPool = set => WORDS.filter(w => [...w.letters].every(c => set.has(c)));
 
 /* =====================================================
@@ -329,7 +376,7 @@ function speak(text, rate){
   if (!hasTTS || !save.sound || !text) return;
   try {
     if (speechSynthesis.speaking || speechSynthesis.pending) speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
+    const u = new SpeechSynthesisUtterance(plain(text));
     u.lang = 'ru-RU'; if (ruVoice) u.voice = ruVoice;
     u.rate = rate || 0.85;
     speechSynthesis.speak(u);
@@ -411,6 +458,70 @@ function specialQs(){
   ];
 }
 
+/* ----- Cours : questions sur le vocabulaire et les phrases ----- */
+const winfo = w => `${acc(w.ru)} se dit « ${w.ph} » et veut dire « ${w.fr} ».`;
+function others(w, pool, n, key){
+  const seen = new Set([w[key]]), out = [];
+  const near = shuffle(pool.filter(x => x !== w));
+  for (const x of near) { if (out.length >= n) break; if (!seen.has(x[key])) { seen.add(x[key]); out.push(x); } }
+  return out;
+}
+function qRF(w, pool){
+  return {type:'mc', cc:true, soft:true, tag:[], prompt:'Que veut dire ce mot ?', big:acc(w.ru), bigCls:'word', speak:w.ru, autoplay:w.ru,
+    options:shuffle([{t:w.fr, ok:true}, ...others(w, pool, 3, 'fr').map(x => ({t:x.fr}))]), answer:w.fr, info:winfo(w), after:null, ph:w.ph};
+}
+function qFR(w, pool){
+  return {type:'mc', cc:true, soft:true, tag:[], prompt:`Comment dit-on « ${w.fr} » ?`, big:w.em || null, grid:true,
+    options:shuffle([{t:acc(w.ru), ok:true}, ...others(w, pool, 3, 'ru').map(x => ({t:acc(x.ru)}))]), answer:acc(w.ru), info:winfo(w), after:w.ru};
+}
+function qLW(w, pool){
+  return {type:'mc', cc:true, soft:true, tag:[], prompt:'Écoute, puis choisis la traduction.', listen:w.ru, autoplay:w.ru,
+    options:shuffle([{t:w.fr, ok:true}, ...others(w, pool, 3, 'fr').map(x => ({t:x.fr}))]), answer:w.fr, info:winfo(w), after:null};
+}
+function qWMatch(ws){
+  return {type:'match', kind:'w', tag:[], pairs:ws.slice(0, 5).map(w => ({l:acc(w.ru), r:w.fr, say:w.ru}))};
+}
+const tokens = s => String(s).replace(/[.,!?—«»:;()]/g, ' ').split(/\s+/).filter(Boolean);
+const normTok = s => plain(s).replace(/\u0301/g, '').toLowerCase().replace(/ё/g, 'е');
+function qBuild(ph, dir, pool){
+  const ans = tokens(dir === 'ru' ? ph.ru : ph.fr);
+  const have = new Set(ans.map(normTok));
+  const cand = shuffle(pool.filter(p => p !== ph).flatMap(p => tokens(dir === 'ru' ? p.ru : p.fr)));
+  const extra = [];
+  for (const t of cand) { if (extra.length >= Math.min(4, Math.max(2, 7 - ans.length))) break; const n = normTok(t); if (!have.has(n)) { have.add(n); extra.push(t); } }
+  return {type:'build', dir, ph, ans, bank:shuffle(ans.concat(extra)).map(t => dir === 'ru' ? acc(t) : t),
+    prompt: dir === 'ru' ? 'Traduis en russe.' : 'Traduis en français.',
+    answer: dir === 'ru' ? acc(ph.ru) : ph.fr, info:`${acc(ph.ru)} — « ${ph.ph} »`, after:ph.ru};
+}
+function buildCourse(k){
+  const L = CL[k], pool = cWordsUpTo(k), ppool = cPhrasesUpTo(k);
+  const steps = [], qs = [];
+  if (L.tip) steps.push({type:'tip', L});
+  const ws = L.words, chunk = 3;
+  for (let i = 0; i < ws.length; i += chunk) {
+    const part = ws.slice(i, i + chunk);
+    part.forEach(w => steps.push({type:'wintro', w}));
+    shuffle(part).forEach((w, j) => { const q = (i / chunk + j) % 2 ? qFR(w, pool) : qRF(w, pool); steps.push(q); qs.push(q); });
+  }
+  const tail = [];
+  if (ws.length >= 4) tail.push(qWMatch(shuffle(ws)));
+  if (hasTTS) shuffle(ws).slice(0, 2).forEach(w => tail.push(qLW(w, pool)));
+  L.phrases.forEach((ph, i) => { if (tokens(ph.ru).length >= 2) tail.push(qBuild(ph, i % 2 ? 'ru' : 'fr', ppool)); });
+  shuffle(ws).slice(0, 2).forEach(w => tail.push(qFR(w, pool)));
+  return {steps:steps.concat(tail), total:qs.length + tail.length};
+}
+function buildVocab(){
+  const doneK = CL.filter(l => csave.done[l.id]).map(l => l.k);
+  const lessons = doneK.length ? doneK.map(k => CL[k]) : CL.slice(0, 1);
+  const ws = lessons.flatMap(l => l.words), ps = lessons.flatMap(l => l.phrases).filter(p => tokens(p.ru).length >= 2);
+  const makers = [() => qRF(rand(ws), ws), () => qFR(rand(ws), ws)];
+  if (hasTTS) makers.push(() => qLW(rand(ws), ws));
+  if (ps.length) makers.push(() => qBuild(rand(ps), Math.random() < .5 ? 'ru' : 'fr', ps));
+  const qs = [], seen = new Set();
+  for (let t = 0; qs.length < 12 && t < 300; t++) { const q = rand(makers)(); const key = q.type + q.prompt + q.answer; if (seen.has(key)) continue; seen.add(key); qs.push(q); }
+  return {steps:qs, total:qs.length};
+}
+
 function buildLesson(i){
   const learned = cumSet(i);
   const pool = LETTERS.filter(x => learned.has(x.l));
@@ -459,7 +570,7 @@ let S = null;
 let sheetC = null;
 
 function startSession(kind, idx, mode){
-  const b = kind === 'lesson' ? buildLesson(idx) : buildPractice(mode);
+  const b = kind === 'lesson' ? buildLesson(idx) : kind === 'course' ? buildCourse(idx) : mode === 'vocab' ? buildVocab() : buildPractice(mode);
   S = {kind, idx, mode, steps:b.steps, total:b.total, pos:0, done:0, firstTry:0, sel:null, checked:false, ok:null, m:null, phase:'play'};
   enterStep(); render();
 }
@@ -468,11 +579,15 @@ function enterStep(){
   const st = S.steps[S.pos];
   if (st.type === 'match') S.m = {L:shuffle(st.pairs.map((_,k)=>k)), R:shuffle(st.pairs.map((_,k)=>k)), selL:null, selR:null, got:new Set(), wrong:0, flash:null};
   if (st.type === 'intro') speak(st.L.ex[0], 0.85);
+  if (st.type === 'wintro') speak(st.w.ru, 0.85);
+  if (st.type === 'build') { S.b = {pick:[]}; if (st.dir === 'fr') speak(st.ph.ru, 0.85); }
   if (st.type === 'mc' && st.autoplay) speak(st.autoplay, 0.85);
 }
 function pick(k){ if (S.checked) return; S.sel = k; render(); }
 function check(){
-  const q = S.steps[S.pos]; if (S.sel == null || S.checked) return;
+  const q = S.steps[S.pos];
+  if (q.type === 'build') return checkBuild(q);
+  if (S.sel == null || S.checked) return;
   const ok = !!q.options[S.sel].ok;
   S.checked = true; S.ok = ok;
   (q.tag||[]).forEach(c => { save.m[c] = Math.max(0, (save.m[c]||0) + (ok ? 1 : (q.soft ? 0 : -1))); });
@@ -482,17 +597,30 @@ function check(){
   if (q.after) speak(q.after, 0.85);
   render();
 }
+function checkBuild(q){
+  if (S.checked || !S.b.pick.length) return;
+  const got = S.b.pick.map(i => normTok(q.bank[i])).join(' '), want = q.ans.map(normTok).join(' ');
+  const ok = got === want;
+  S.checked = true; S.ok = ok;
+  if (ok) { if (!q.retry) S.firstTry++; }
+  else if (!q.retry) S.steps.push({...q, retry:true, bank:shuffle(q.bank)});
+  speak(q.after, 0.85);
+  render();
+}
+function tokTap(i){ if (S.checked || S.b.pick.includes(i)) return; S.b.pick.push(i); render(); }
+function untokTap(j){ if (S.checked) return; S.b.pick.splice(j, 1); render(); }
 function matchTap(side, k){
   const m = S.m, st = S.steps[S.pos];
   if (!m || S.checked || m.flash || m.got.has(k)) return;
   if (side === 'l') m.selL = (m.selL === k ? null : k); else m.selR = (m.selR === k ? null : k);
   if (m.selL != null && m.selR != null) {
     if (m.selL === m.selR) {
+      if (st.pairs[m.selL].say) speak(st.pairs[m.selL].say, 0.9);
       m.got.add(m.selL); m.selL = m.selR = null;
       if (m.got.size === st.pairs.length) {
         S.checked = true; S.ok = m.wrong === 0;
         if (S.ok && !st.retry) S.firstTry++;
-        st.tag.forEach(c => { save.m[c] = (save.m[c]||0) + 1; });
+        (st.tag || []).forEach(c => { save.m[c] = (save.m[c]||0) + 1; });
         persist();
       }
     } else {
@@ -507,7 +635,8 @@ function next(){
   if (S.pos >= S.steps.length) {
     S.phase = 'end';
     if (S.kind === 'lesson') { save.done[S.idx] = true; persist(); }
-    if (window.MQJ) MQJ.log({ a: 'russe', m: S.kind === 'lesson' ? 'leçon ' + (S.idx + 1) : S.mode, g: S.firstTry, n: S.total });
+    if (S.kind === 'course') { csave.done[CL[S.idx].id] = true; cpersist(); }
+    if (window.MQJ) MQJ.log({ a: 'russe', m: S.kind === 'lesson' ? 'leçon ' + (S.idx + 1) : S.kind === 'course' ? CL[S.idx].t : S.mode, g: S.firstTry, n: S.total });
     render(); return;
   }
   enterStep(); render();
@@ -546,10 +675,18 @@ function renderPath(){
       <span class="node-label"><b>${esc(L.t)}</b><span class="letters">${[...L.l].join(' ')}</span><small>${esc(L.s)}</small></span>
     </button>`;
   }).join('');
-  return `<div class="hero"><div class="logo">Я</div><div><h1>Азбука</h1><p>L'alphabet russe à ton rythme : pas de série à tenir, pas de vies à perdre.</p></div></div>
-    <div class="stats"><div><b>${nDone} / ${LESSONS.length}</b><span>leçons terminées</span></div><div><b>${nEasy} / 33</b><span>lettres bien ancrées</span></div></div>
+  const cDone = CL.filter(l => csave.done[l.id]).length;
+  const nWords = CL.filter(l => csave.done[l.id]).reduce((a, l) => a + l.words.length, 0);
+  let off = 7;
+  const units = COURSE.map(u => `<div class="unit" style="--uc:${u.c}"><small>Unité ${u.ui + 2}</small><b>${esc(u.u)}</b><span>${u.lessons.length} leçons · ${u.lessons.reduce((a, l) => a + l.words.length, 0)} mots</span></div>` +
+    u.lessons.map(l => { const d = !!csave.done[l.id];
+      return `<button class="node-wrap" style="transform:translateX(${offs[(off++)%7]}px);--uc:${u.c}" data-act="clesson" data-k="${l.k}" aria-label="Leçon : ${esc(l.t)}">
+        <span class="node c ${d?'done':''}">${d ? CHECK_SVG : l.em}</span>
+        <span class="node-label"><b>${esc(l.t)}</b><span class="words">${l.words.slice(0, 3).map(w => esc(acc(w.ru))).join(' · ')}…</span><small>${esc(l.s)}</small></span></button>`; }).join('')).join('');
+  return `<div class="hero"><div class="logo">Я</div><div><h1>Русский</h1><p>Le russe à ton rythme : l'alphabet, puis les mots et les phrases du quotidien. Pas de vies à perdre.</p></div></div>
+    <div class="stats"><div><b>${nDone + cDone} / ${LESSONS.length + CL.length}</b><span>leçons terminées</span></div><div><b>${nWords}</b><span>mots appris · ${nEasy}/33 lettres</span></div></div>
     ${voiceNote()}
-    <div class="path">${nodes}</div>`;
+    <div class="path"><div class="unit"><small>Unité 1</small><b>L'alphabet</b><span>7 leçons · les 33 lettres</span></div>${nodes}${units}</div>`;
 }
 
 function renderAlpha(){
@@ -573,6 +710,7 @@ function renderPrac(){
       <button class="pill ${scope==='done'?'on':''}" data-act="scope" data-s="done" ${any?'':'disabled'}>Leçons terminées</button>
     </div>
     <div class="modes">
+      <button class="mode" data-act="prac" data-mode="vocab"><span class="em">💬</span><span><b>Mots et phrases du cours</b><span>${CL.some(l => csave.done[l.id]) ? 'Le vocabulaire des leçons que tu as terminées.' : 'Termine une leçon du cours pour réviser ses mots.'}</span></span></button>
       <button class="mode" data-act="prac" data-mode="letters"><span class="em">🔤</span><span><b>Lettres et sons</b><span>Reconnaître une lettre, retrouver son son.</span></span></button>
       <button class="mode" data-act="prac" data-mode="words"><span class="em">📖</span><span><b>Lire des mots</b><span>Déchiffrer de vrais mots russes.</span></span></button>
       <button class="mode" data-act="prac" data-mode="listen" ${hasTTS?'':'disabled'}><span class="em">🎧</span><span><b>Écouter et retrouver</b><span>${hasTTS?'Tu entends un mot, tu choisis le bon.':'Audio indisponible sur ce navigateur.'}</span></span></button>
@@ -602,9 +740,27 @@ function mcHTML(q){
   let stage = '';
   if (q.big) stage = `<div class="stage"><div class="bigtxt ${q.bigCls||''}">${esc(q.big)}</div>${q.speak ? spkBtn(q.speak) : ''}</div>`;
   if (q.listen) stage = `<div class="stage">${spkBtn(q.listen,'xl',0.85,'Écouter le mot')}<button class="pill" data-act="say" data-say="${esc(q.listen)}" data-rate="0.5">🐢 Plus lentement</button></div>`;
-  return `<h2 class="prompt">${esc(q.prompt)}</h2>${stage}<div class="opts ${q.grid?'grid':''}">${opts}</div>${q.legend ? '<p class="legend">Les majuscules marquent la syllabe accentuée.</p>' : ''}`;
+  return `<h2 class="prompt">${esc(q.prompt)}</h2>${stage}<div class="opts ${q.grid?'grid':''}">${opts}</div>${q.legend ? '<p class="legend">Les majuscules marquent la syllabe accentuée.</p>' : ''}${q.cc ? '<p class="legend">L’accent (´) marque la syllabe accentuée.</p>' : ''}`;
 }
 
+function wordCard(w){
+  return `<div class="wcard"><span class="tag-new">Nouveau mot</span>
+    ${w.em ? `<div class="wem">${w.em}</div>` : ''}
+    <div class="wru">${esc(acc(w.ru))}</div><div class="wph">« ${esc(w.ph)} »</div><div class="wfr">${esc(w.fr)}</div>
+    <div class="btns">${spkBtn(w.ru,'',0.85,'Écouter')}${spkBtn(w.ru,'slow',0.5,'Écouter lentement')}</div></div>`;
+}
+function tipCard(L){
+  return `<div class="tipcard"><div class="ti">💡</div><h3>${esc(L.t)} : l'astuce</h3><p>${esc(acc(L.tip))}</p></div>`;
+}
+function buildHTML(q){
+  const pick = S.b.pick;
+  const head = q.dir === 'fr'
+    ? `<div class="say-row">${spkBtn(q.ph.ru,'',0.85,'Écouter la phrase')}<div class="tx">${esc(acc(q.ph.ru))}</div></div>`
+    : `<div class="say-row"><div class="tx">${esc(q.ph.fr)}</div></div>`;
+  const ans = pick.map((i, j) => `<button class="tok" data-act="untok" data-j="${j}" ${S.checked?'disabled':''}>${esc(q.bank[i])}</button>`).join('');
+  const bank = q.bank.map((t, i) => pick.includes(i) ? `<button class="tok ghost" disabled>${esc(t)}</button>` : `<button class="tok" data-act="tok" data-i="${i}" ${S.checked?'disabled':''}>${esc(t)}</button>`).join('');
+  return `<h2 class="prompt">${esc(q.prompt)}</h2>${head}<div class="ans">${ans}</div><div class="bank">${bank}</div>`;
+}
 function matchHTML(st){
   const m = S.m;
   const cls = (side,k) => {
@@ -614,6 +770,11 @@ function matchHTML(st){
     else if ((side==='l' ? m.selL : m.selR) === k) c += ' sel';
     return c;
   };
+  if (st.kind === 'w') {
+    const L = m.L.map(k => `<button class="${cls('l',k)} w" data-act="ml" data-k="${k}">${esc(st.pairs[k].l)}</button>`).join('');
+    const R = m.R.map(k => `<button class="${cls('r',k)} w" data-act="mr" data-k="${k}">${esc(st.pairs[k].r)}</button>`).join('');
+    return `<h2 class="prompt">Associe chaque mot à sa traduction.</h2><div class="pairs"><div class="col">${L}</div><div class="col">${R}</div></div>`;
+  }
   const L = m.L.map(k => `<button class="${cls('l',k)}" data-act="ml" data-k="${k}"><span class="lt">${esc(st.pairs[k].c)}</span></button>`).join('');
   const R = m.R.map(k => `<button class="${cls('r',k)}" data-act="mr" data-k="${k}">${esc(st.pairs[k].snd)}</button>`).join('');
   return `<h2 class="prompt">Associe chaque lettre à son son.</h2><div class="pairs"><div class="col">${L}</div><div class="col">${R}</div></div>`;
@@ -631,13 +792,18 @@ function renderSession(){
   const st = S.steps[S.pos];
   const pct = Math.round(S.done / S.steps.length * 100);
   let main = '', foot = '';
-  if (st.type === 'intro') {
-    main = letterCard(st.L);
+  if (st.type === 'intro' || st.type === 'wintro' || st.type === 'tip') {
+    main = st.type === 'intro' ? letterCard(st.L) : st.type === 'wintro' ? wordCard(st.w) : tipCard(st.L);
     foot = '<button class="btn wide" data-act="next">Continuer</button>';
+  } else if (st.type === 'build') {
+    main = buildHTML(st);
+    if (S.checked) foot = S.ok ? fbHTML(true, rand(['Bravo !','Exact !','Parfait !','Très bien !']), '', st.info, st.after)
+                               : fbHTML(false, 'Pas tout à fait', 'Bonne réponse : <b style="display:inline">' + esc(st.answer) + '</b>', st.info, st.after);
+    else foot = `<button class="btn wide" data-act="check" ${S.b.pick.length?'':'disabled'}>Vérifier</button>`;
   } else if (st.type === 'match') {
     main = matchHTML(st);
     foot = S.checked ? fbHTML(true, S.m.wrong === 0 ? 'Bravo !' : 'C\'est fait !', S.m.wrong === 0 ? 'Toutes les paires sont bonnes.' : 'Quelques hésitations : c\'est comme ça qu\'on retient.', null, null)
-                     : '<div class="foot-hint">Touche une lettre, puis son son.</div>';
+                     : `<div class="foot-hint">${st.kind === 'w' ? 'Touche un mot russe, puis sa traduction.' : 'Touche une lettre, puis son son.'}</div>`;
   } else {
     main = mcHTML(st);
     if (S.checked) {
@@ -657,9 +823,11 @@ function renderSession(){
 }
 
 function renderEnd(){
-  const isL = S.kind === 'lesson';
-  const chips = isL ? `<div class="lets">${LETTERS.filter(x => x.lesson === S.idx).map(x => `<span>${x.c}</span>`).join('')}</div>` : '';
-  const hasNext = isL && S.idx < LESSONS.length - 1;
+  const isC = S.kind === 'course';
+  const isL = S.kind === 'lesson' || isC;
+  const chips = S.kind === 'lesson' ? `<div class="lets">${LETTERS.filter(x => x.lesson === S.idx).map(x => `<span>${x.c}</span>`).join('')}</div>`
+    : isC ? `<div class="lets">${CL[S.idx].words.map(w => `<span style="font-size:18px">${esc(acc(w.ru))}</span>`).join('')}</div>` : '';
+  const hasNext = S.kind === 'lesson' ? (S.idx < LESSONS.length - 1 || CL.length > 0) : isC && S.idx < CL.length - 1;
   const msg = `${S.firstTry} réponse${S.firstTry>1?'s':''} juste${S.firstTry>1?'s':''} du premier coup sur ${S.total}.`;
   return `<div class="session"><div class="s-main"><div class="end">
     <div class="trophy">${isL ? '🏅' : '🎉'}</div>
@@ -710,10 +878,13 @@ document.addEventListener('click', e => {
     case 'mr': matchTap('r', +t.dataset.k); break;
     case 'quit': quit(); break;
     case 'again': startSession(S.kind, S.idx, S.mode); break;
-    case 'nextlesson': startSession('lesson', S.idx + 1); break;
+    case 'nextlesson': if (S.kind === 'course') startSession('course', S.idx + 1); else if (S.idx < LESSONS.length - 1) startSession('lesson', S.idx + 1); else startSession('course', 0); break;
+    case 'clesson': startSession('course', +t.dataset.k); break;
+    case 'tok': tokTap(+t.dataset.i); break;
+    case 'untok': untokTap(+t.dataset.j); break;
     case 'reset':
       if (!resetArmed) { resetArmed = true; render(); }
-      else { save = {done:{}, m:{}, sound:save.sound, scope:'all'}; persist(); resetArmed = false; render(); }
+      else { save = {done:{}, m:{}, sound:save.sound, scope:'all'}; persist(); csave = {done:{}}; cpersist(); resetArmed = false; render(); }
       break;
   }
 });
@@ -722,8 +893,8 @@ document.addEventListener('keydown', e => {
   if (!S || S.phase === 'end') return;
   const st = S.steps[S.pos];
   if (e.key === 'Enter') {
-    if (st.type === 'intro' || S.checked) { e.preventDefault(); next(); }
-    else if (st.type === 'mc' && S.sel != null) { e.preventDefault(); check(); }
+    if (st.type === 'intro' || st.type === 'wintro' || st.type === 'tip' || S.checked) { e.preventDefault(); next(); }
+    else if ((st.type === 'mc' && S.sel != null) || (st.type === 'build' && S.b.pick.length)) { e.preventDefault(); check(); }
   } else if (st.type === 'mc' && !S.checked && /^[1-4]$/.test(e.key) && st.options[+e.key - 1]) {
     S.sel = +e.key - 1; render();
   }

@@ -14,7 +14,7 @@ et publié dans les Releases. Il n'y a pas de SDK Android à installer en local.
 - Chaque fin de partie appelle `MQJ.log({ a: <id du quiz>, m: <mode>, g: <bonnes réponses>, n: <questions>, s: <score> })`.
 - La progression est en `localStorage` ; ne jamais renommer une clé existante
   (`quizcult-best-*`, `mm_known_v1`, `mm_best_v1`, `azbuka_alphabet_v1`, `mq-best-*`, `mq-played`, `mq-chrono`,
-  `mq-journal-v1`, `mq-profile-v1`, `mq-miss-*`).
+  `mq-journal-v1`, `mq-profile-v1`, `mq-miss-*`, `ru_course_v1`).
 - Nouveaux quiz : un fichier `www/apps/quiz/data/<nom>.js` + une entrée dans `APPS` de `www/shared/journal.js`
   (catalogue commun à l'accueil et au profil ; l'`id` doit être égal à `<nom>`).
   Vérifier qu'aucune mauvaise réponse n'est égale à la bonne, et qu'il n'y a pas de doublon.
@@ -23,5 +23,9 @@ et publié dans les Releases. Il n'y a pas de SDK Android à installer en local.
 - Pas de question en double avec les autres quiz (Culture G et Sciences couvrent déjà beaucoup de records et de dates).
 - Photos du quiz militaire : `www/apps/militaire/img/<slug>.jpg` (≤ 720 px, JPEG ~75 %), décrites dans `img/credits.js`
   (auteur, licence, page Commons). Garder les crédits à jour : ils s'affichent sous chaque photo et dans le catalogue.
+- Cours de russe : les unités après l'alphabet sont dans `www/apps/russe/cours.js`. Un « + » suit la voyelle
+  accentuée (`приве+т`) ; la prononciation `ph` met la syllabe accentuée en MAJUSCULES et suit la réduction
+  des voyelles (о non accentué → « a », е → « i »). Pas de doublon de mot ni de traduction entre leçons.
+- Effets sonores : n'intégrer un son qu'après validation explicite par Clément (lui faire écouter le MP3 d'abord).
 - Ne pas modifier la clé `android/app/mesquiz.keystore` : sinon les mises à jour ne s'installent plus par-dessus.
 - Après une modification de `www/`, lancer `npx cap sync android` avant de committer si `android/` a changé.
