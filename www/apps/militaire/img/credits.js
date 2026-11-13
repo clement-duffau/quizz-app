@@ -105,6 +105,14 @@ window.MM_IMG = {
 "l": "Public domain",
 "u": "https://commons.wikimedia.org/wiki/File:US_M2A1_Bradley_deployed_to_Saudi_Arabia_during_Operation_Desert_Shield.jpg"
 },
+"Merkava Mk 4": {
+"f": "merkava-mk-4.jpg",
+"w": 659,
+"h": 480,
+"a": "Source: Israel Defense Forces Spokesperson UnitDerivative: User:MathKnight",
+"l": "CC BY-SA 4.0",
+"u": "https://commons.wikimedia.org/wiki/File:Merkava-Mk4m-whiteback01.jpg"
+},
 "Puma": {
 "f": "puma.jpg",
 "w": 624,
