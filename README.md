@@ -5,12 +5,24 @@ Appli Android qui regroupe mes quiz :
 | Quiz | Contenu |
 |---|---|
 | 🧠 Culture G & acronymes | 38 acronymes, 98 questions de culture générale, chrono et combos |
-| 🛡️ Matériel militaire | 69 équipements : fiches chiffrées, quiz, catalogue |
+| 🛡️ Matériel militaire | 69 équipements : fiches chiffrées avec photo, quiz, catalogue |
 | Я Alphabet russe | 7 leçons, 33 lettres, prononciation (voix Android) |
 | 🚩 Drapeaux & capitales | 97 pays : drapeaux, capitales, capitale → pays |
 | 🔭 Sciences & espace | Espace, chimie, physique & unités, vivant |
 | 💡 Marques & tech | Fondateurs, dates clés, origine des noms, pays d'origine |
 | ⏳ Histoire & dates | Grandes dates, inventions, personnages |
+| 🗺️ Géographie | Fleuves, sommets, records du monde, la France |
+| 🐾 Animaux & nature | Records du vivant, petits et cris, classification, plantes |
+| ⚽ Sport | Règles, légendes, grandes compétitions |
+| 🗣️ Langue française | Expressions, pièges d'orthographe, mots et origines |
+| ✈️ Aviation & espace | Pionniers, avions et radio, conquête spatiale |
+
+Et aussi :
+
+- **Mon profil** (carte en haut de l'accueil) : pseudo et avatar, niveau, série de jours 🔥, objectif du jour,
+  graphique jour après jour, calendrier, progression par quiz, badges et dernières parties.
+- **À revoir** : dans les quiz à modes, les questions ratées reviennent jusqu'à ce qu'elles soient réussies.
+- **Photos** des équipements militaires (Wikimedia Commons, crédits dans le catalogue) et un quiz « Photos seulement ».
 
 ## Installer l'appli sur le téléphone
 
@@ -32,10 +44,13 @@ puis télécharger la voix russe si elle n'y est pas.
 ```
 www/                      l'appli web (ce que contient l'APK)
   index.html              écran d'accueil
+  apps/profil/index.html  page profil et progression
   apps/culture|militaire|russe/index.html   les quiz existants (fichiers uniques)
+  apps/militaire/img/     photos des équipements + credits.js
   apps/quiz/index.html    moteur commun des nouveaux quiz (?t=drapeaux…)
   apps/quiz/data/*.js     les questions de chaque nouveau quiz
   shared/shell.js         barre « ‹ Mes Quiz », bouton retour Android, voix native
+  shared/journal.js       catalogue des quiz + historique des parties (profil)
   shared/fonts/           polices embarquées (l'appli marche hors ligne)
 android/                  projet Android généré par Capacitor
 .github/workflows/android.yml   construction automatique de l'APK
@@ -45,7 +60,7 @@ android/                  projet Android généré par Capacitor
 
 Créer `www/apps/quiz/data/<nom>.js` sur le modèle de `histoire.js`
 (une question = `{k: catégorie, q, r: bonne réponse, w: [3 mauvaises ou plus], f: anecdote}`),
-puis ajouter une tuile dans `APPS` de `www/index.html`.
+puis ajouter son entrée dans `APPS` de `www/shared/journal.js` (même `id` que le nom du fichier).
 
 ## Tester sur PC
 

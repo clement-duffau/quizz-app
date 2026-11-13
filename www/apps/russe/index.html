@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="../../shared/fonts/fonts.css">
 <script src="../../shared/capacitor.js"></script>
 <script src="../../shared/shell.js"></script>
+<script src="../../shared/journal.js"></script>
 <style>
 :root{
   --bg:#edf2f8;--card:#ffffff;--ink:#16213a;--muted:#5d6985;--line:#d9e0ed;--line-d:#c2cce0;
@@ -506,6 +507,7 @@ function next(){
   if (S.pos >= S.steps.length) {
     S.phase = 'end';
     if (S.kind === 'lesson') { save.done[S.idx] = true; persist(); }
+    if (window.MQJ) MQJ.log({ a: 'russe', m: S.kind === 'lesson' ? 'leçon ' + (S.idx + 1) : S.mode, g: S.firstTry, n: S.total });
     render(); return;
   }
   enterStep(); render();

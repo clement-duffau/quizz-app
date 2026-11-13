@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mon profil — Mes Quiz</title>
+<meta name="mq-title" content="Mon profil">
+<link rel="stylesheet" href="../../shared/fonts/fonts.css">
+<script src="../../shared/capacitor.js"></script>
+<script src="../../shared/shell.js"></script>
+<script src="../../shared/journal.js"></script>
+<style>
+:root{--bg:#F4F1EA;--surface:#FFFFFF;--ink:#1D1B16;--muted:#6B665B;--line:#E2DDD1;--acc:#2E5BFF;--acc-soft:#C9D4FF;--hot:#F5B700;--good:#159A5B;--bad:#E0412F;
+  --h0:#ECE8DE;--h1:#C9D4FF;--h2:#8FA6FF;--h3:#4F72FF;--h4:#2340C7;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141318;--surface:#1F1D25;--ink:#F2EFE8;--muted:#A49F94;--line:#33303B;--acc:#7D96FF;--acc-soft:#3A4270;
+  --h0:#2A2731;--h1:#2E3766;--h2:#3F55B8;--h3:#6A86FF;--h4:#B4C3FF;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141318;--surface:#1F1D25;--ink:#F2EFE8;--muted:#A49F94;--line:#33303B;--acc:#7D96FF;--acc-soft:#3A4270;
+  --h0:#2A2731;--h1:#2E3766;--h2:#3F55B8;--h3:#6A86FF;--h4:#B4C3FF;color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.4;-webkit-tap-highlight-color:transparent}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--hot);outline-offset:3px}
+a{color:inherit}
+.wrap{max-width:680px;margin:0 auto;padding:16px 16px calc(40px + env(safe-area-inset-bottom,0px))}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:16px;margin-bottom:14px;animation:up .4s ease both}
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+h2{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;font-weight:700}
+.muted{color:var(--muted)}
+
+/* Identité */
+.me{display:flex;align-items:center;gap:14px}
+.ava{flex:none;width:76px;height:76px;border-radius:24px;border:0;background:var(--acc);display:grid;place-items:center;font-size:44px;box-shadow:0 5px 0 color-mix(in srgb,var(--acc) 55%,#000)}
+.ava:active{transform:translateY(3px);box-shadow:0 2px 0 color-mix(in srgb,var(--acc) 55%,#000)}
+.who{flex:1;min-width:0}
+.name{width:100%;border:0;border-bottom:2px dashed var(--line);background:transparent;font-size:24px;font-weight:800;padding:2px 0;border-radius:0}
+.name::placeholder{color:var(--muted);opacity:.7}
+.name:focus{outline:none;border-bottom-color:var(--acc)}
+.lv{display:flex;justify-content:space-between;font-size:14px;margin-top:8px;font-weight:700}
+.xp{height:10px;border-radius:5px;background:var(--h0);overflow:hidden;margin-top:5px}
+.xp i{display:block;height:100%;background:var(--acc);border-radius:5px;transition:width .6s ease}
+.picker{display:none;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:14px}
+.picker.on{display:grid}
+.picker button{border:2px solid var(--line);background:var(--bg);border-radius:12px;font-size:24px;padding:6px 0}
+.picker button[aria-pressed="true"]{border-color:var(--acc)}
+
+/* Aujourd'hui */
+.today{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
+.ring{position:relative;width:96px;height:96px}
+.ring svg{width:96px;height:96px;transform:rotate(-90deg)}
+.ring .v{position:absolute;inset:0;display:grid;place-items:center;text-align:center;line-height:1.05}
+.ring .v b{font-size:28px;font-weight:800;display:block}
+.ring .v small{font-size:12px;color:var(--muted)}
+.flame{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px}
+.flame .f{font-size:32px}
+.flame.off .f{filter:grayscale(1);opacity:.5}
+.goal{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+.goal span{display:inline-flex;align-items:center;gap:10px}
+.goal b{color:var(--ink);min-width:74px;text-align:center}
+.goal button{width:34px;height:34px;border-radius:10px;border:2px solid var(--line);background:var(--bg);font-weight:800;line-height:1}
+.msg{margin:8px 0 0;font-size:15px}
+
+/* Chiffres */
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media (min-width:560px){.kpis{grid-template-columns:repeat(4,1fr)}}
+.kpi{background:var(--bg);border-radius:16px;padding:12px}
+.kpi b{display:block;font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1}
+.kpi span{font-size:13px;color:var(--muted)}
+
+/* Graphique jour par jour */
+.chead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
+.chead h2{margin:0}
+.seg{display:inline-flex;background:var(--bg);border-radius:999px;padding:3px}
+.seg button{border:0;background:transparent;border-radius:999px;padding:5px 12px;font-size:13px;font-weight:700;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.legend{display:flex;gap:14px;font-size:13px;color:var(--muted);margin:2px 0 6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+#chart{width:100%;height:auto;display:block;touch-action:pan-y}
+#chart .bar{cursor:pointer}
+#chart .sel rect.hit{fill:var(--ink);opacity:.06}
+.detail{min-height:44px;background:var(--bg);border-radius:12px;padding:10px 12px;font-size:14px;margin-top:6px}
+.detail b{font-weight:800}
+
+/* Calendrier */
+.cal{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,1fr);gap:3px}
+.cal i{display:block;aspect-ratio:1;border-radius:3px;background:var(--h0)}
+.cal i.l1{background:var(--h1)}.cal i.l2{background:var(--h2)}.cal i.l3{background:var(--h3)}.cal i.l4{background:var(--h4)}
+.cal i.fut{background:transparent}
+.cal i.now{outline:2px solid var(--ink);outline-offset:-1px}
+.calfoot{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);margin-top:8px}
+.scale{display:flex;align-items:center;gap:3px}
+.scale i{width:11px;height:11px;border-radius:3px;display:inline-block}
+
+/* Par quiz */
+.qrow{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line);text-decoration:none}
+.qrow:first-of-type{border-top:0}
+.qem{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:24px;color:#fff;font-weight:800;background:var(--c)}
+.qt{font-weight:700;line-height:1.2}
+.qs{font-size:13px;color:var(--muted)}
+.qbar{height:6px;border-radius:3px;background:var(--h0);margin-top:5px;overflow:hidden}
+.qbar i{display:block;height:100%;background:var(--c);border-radius:3px}
+.qp{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+.qp small{display:block;font-size:12px;font-weight:600;color:var(--muted)}
+.up{color:var(--good)}.down{color:var(--bad)}
+
+/* Badges */
+.badges{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (min-width:560px){.badges{grid-template-columns:repeat(4,1fr)}}
+.bdg{background:var(--bg);border-radius:16px;padding:12px 8px;text-align:center}
+.bdg .e{font-size:30px;display:block}
+.bdg b{display:block;font-size:13px;line-height:1.2;margin-top:4px}
+.bdg small{display:block;font-size:11px;color:var(--muted);margin-top:2px;line-height:1.25}
+.bdg.lock .e{filter:grayscale(1);opacity:.35}
+.bdg.lock b{color:var(--muted)}
+
+/* Historique */
+.hist{list-style:none;margin:0;padding:0}
+.hist li{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+.hist li:first-child{border-top:0}
+.hist .he{font-size:20px;width:28px;text-align:center}
+.hist .hs{font-weight:800;font-variant-numeric:tabular-nums}
+.empty{text-align:center;padding:26px 12px}
+.empty .e{font-size:54px}
+.btn{display:inline-block;margin-top:12px;padding:12px 18px;border-radius:14px;background:var(--acc);color:#fff;font-weight:800;text-decoration:none;border:0;box-shadow:0 4px 0 color-mix(in srgb,var(--acc) 55%,#000)}
+.danger{background:none;border:0;color:var(--muted);text-decoration:underline;font-size:14px;padding:8px;display:block;margin:6px auto 0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="wrap" id="app"></main>
+<script>
+(function(){
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const J = MQJ.load(), P = MQJ.profile(), today = new Date(), tk = MQJ.dayKey(today);
+const AVATARS = ['🦊','🐻','🐼','🐯','🦁','🐸','🐙','🦉','🐺','🦅','🐬','🦖','🚀','🛡️','🎯','🧠'];
+const MOIS = ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+const JOURS = ['dim.','lun.','mar.','mer.','jeu.','ven.','sam.'];
+const pct = (g, n) => n ? Math.round(g / n * 100) : 0;
+const dOf = k => { const p = k.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); };
+const fmtDay = d => JOURS[d.getDay()] + ' ' + d.getDate() + ' ' + MOIS[d.getMonth()];
+const plural = (n, w) => n + ' ' + w + (n > 1 ? 's' : '');
+// Noms lisibles des modes enregistrés par les quiz
+const MODES = { '!':'À revoir', acro:'Acronymes', cg:'Culture générale', mix:'Mélange', quiz:'Quiz', fiches:'Fiches',
+  letters:'Lettres et sons', words:'Lire des mots', listen:'Écouter', mixed:'Tout mélangé' };
+const modeName = m => MODES[m] || m;
+let range = 14, selDay = tk;
+
+function ago(k){
+  const n = Math.round((dOf(tk) - dOf(k)) / 864e5);
+  return n === 0 ? 'aujourd’hui' : n === 1 ? 'hier' : 'il y a ' + n + ' j';
+}
+// Réussite sur une fenêtre de jours [from, to[ (en jours avant aujourd'hui), pour un quiz donné
+function windowAcc(id, from, to){
+  const lo = MQJ.addDays(today, -to + 1).setHours(0,0,0,0), hi = MQJ.addDays(today, -from + 1).setHours(0,0,0,0);
+  let g = 0, n = 0; J.games.forEach(x => { if (x.a === id && x.t >= lo && x.t < hi) { g += x.g; n += x.n; } });
+  return n ? g / n : null;
+}
+
+function badges(){
+  const s = MQJ.streak(J), bs = MQJ.bestStreak(J), t = J.tot, nDays = Object.keys(J.days).length;
+  const tried = MQJ.APPS.filter(a => J.apps[a.id]).length;
+  return [
+    { e:'🐣', t:'Premier pas', d:'Finir une partie', ok: t.p >= 1 },
+    { e:'🔥', t:'Lancé', d:'3 jours d’affilée', ok: bs >= 3 },
+    { e:'☄️', t:'Semaine parfaite', d:'7 jours d’affilée', ok: bs >= 7 },
+    { e:'🌋', t:'Inarrêtable', d:'30 jours d’affilée', ok: bs >= 30 },
+    { e:'💯', t:'Sans faute', d:'Une partie parfaite', ok: t.perfect >= 1 },
+    { e:'🏅', t:'Perfectionniste', d:'10 parties parfaites', ok: t.perfect >= 10 },
+    { e:'🎯', t:'Centurion', d:'100 bonnes réponses', ok: t.g >= 100 },
+    { e:'🧠', t:'Encyclopédie', d:'1 000 bonnes réponses', ok: t.g >= 1000 },
+    { e:'🧭', t:'Explorateur', d:'Essayer tous les quiz', ok: tried >= MQJ.APPS.length, p: tried + '/' + MQJ.APPS.length },
+    { e:'📅', t:'Habitué', d:'Jouer 20 jours', ok: nDays >= 20, p: nDays + '/20' },
+    { e:'🦉', t:'Oiseau de nuit', d:'Jouer après 23 h', ok: t.night >= 1 },
+    { e:'🐓', t:'Lève-tôt', d:'Jouer avant 7 h', ok: t.early >= 1 }
+  ].map(b => ({ ...b, s }));
+}
+
+function render(){
+  const lv = MQJ.level(J.tot.g), s = MQJ.streak(J), bs = MQJ.bestStreak(J);
+  const td = J.days[tk] || { p:0, g:0, n:0 };
+  const since = dOf(J.since || tk);
+  const goalPct = Math.min(1, td.p / P.goal), C = 2 * Math.PI * 44;
+  const playedToday = td.p > 0;
+  const msg = td.p >= P.goal ? 'Objectif du jour atteint, bravo ! 🎉'
+    : playedToday ? 'Encore ' + plural(P.goal - td.p, 'partie') + ' pour l’objectif.'
+    : s ? 'Joue aujourd’hui pour garder ta série !' : 'Une partie aujourd’hui pour lancer une série ?';
+  let h = '';
+  // Identité
+  h += `<section class="card"><div class="me">
+      <button class="ava" id="ava" aria-label="Changer d’avatar">${P.avatar}</button>
+      <div class="who"><input class="name" id="name" maxlength="24" placeholder="Ton pseudo" value="${esc(P.name)}" aria-label="Ton pseudo">
+        <div class="lv"><span>Niveau ${lv.lv}</span><span class="muted">${lv.cur} / ${lv.need} XP</span></div>
+        <div class="xp" aria-hidden="true"><i style="width:${Math.round(lv.cur / lv.need * 100)}%"></i></div>
+        <div class="muted" style="font-size:13px;margin-top:6px">1 bonne réponse = 1 XP · joueur depuis le ${since.getDate()} ${MOIS[since.getMonth()]} ${since.getFullYear()}</div>
+      </div></div>
+      <div class="picker" id="picker">${AVATARS.map(a => `<button data-av="${a}" aria-pressed="${a === P.avatar}">${a}</button>`).join('')}</div></section>`;
+  // Aujourd'hui
+  h += `<section class="card"><h2>Aujourd’hui</h2><div class="today">
+      <div class="ring" role="img" aria-label="${td.p} partie(s) sur un objectif de ${P.goal}">
+        <svg viewBox="0 0 104 104"><circle cx="52" cy="52" r="44" fill="none" stroke="var(--h0)" stroke-width="12"/>
+        <circle cx="52" cy="52" r="44" fill="none" stroke="${goalPct >= 1 ? 'var(--good)' : 'var(--acc)'}" stroke-width="12" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - goalPct)}"/></svg>
+        <div class="v"><div><b>${td.p}/${P.goal}</b><small>parties</small></div></div></div>
+      <div><div class="flame ${s ? '' : 'off'}"><span class="f">🔥</span><span>${plural(s, 'jour')} de suite</span></div>
+        <div class="muted" style="font-size:14px">Record : ${plural(bs, 'jour')}${td.n ? ' · aujourd’hui ' + td.g + '/' + td.n + ' (' + pct(td.g, td.n) + ' %)' : ''}</div>
+        <p class="msg">${msg}</p>
+      </div></div>
+      <div class="goal">Objectif par jour<span><button id="gm" aria-label="Baisser l’objectif">−</button><b>${plural(P.goal, 'partie')}</b><button id="gp" aria-label="Monter l’objectif">+</button></span></div></section>`;
+
+  if (!J.tot.p) {
+    h += `<section class="card empty"><div class="e">📈</div><p><b>Ton historique est vide pour l’instant.</b><br><span class="muted">Chaque partie terminée s’ajoute ici : tu verras ta progression jour après jour.</span></p><a class="btn" href="../../index.html">Choisir un quiz</a></section>`;
+    $('#app').innerHTML = h; wire(); return;
+  }
+  // Chiffres
+  h += `<section class="card"><h2>En tout</h2><div class="kpis">
+      <div class="kpi"><b>${J.tot.p}</b><span>parties</span></div>
+      <div class="kpi"><b>${J.tot.n}</b><span>questions</span></div>
+      <div class="kpi"><b>${pct(J.tot.g, J.tot.n)} %</b><span>de réussite</span></div>
+      <div class="kpi"><b>${Object.keys(J.days).length}</b><span>jours joués</span></div></div></section>`;
+  // Jour après jour
+  h += `<section class="card"><div class="chead"><h2>Jour après jour</h2><div class="seg" role="group" aria-label="Période">
+      ${[7,14,30].map(r => `<button data-r="${r}" aria-pressed="${r === range}">${r} j</button>`).join('')}</div></div>
+      <div class="legend"><span><i style="background:var(--acc)"></i>Bonnes réponses</span><span><i style="background:var(--acc-soft)"></i>Ratées</span></div>
+      <svg id="chart" role="img" aria-label="Questions répondues par jour sur les ${range} derniers jours"></svg>
+      <div class="detail" id="detail" aria-live="polite"></div></section>`;
+  // Calendrier
+  h += `<section class="card"><h2>Calendrier</h2><div class="cal" id="cal"></div>
+      <div class="calfoot"><span id="calspan"></span><span class="scale">Moins <i style="background:var(--h0)"></i><i style="background:var(--h1)"></i><i style="background:var(--h2)"></i><i style="background:var(--h3)"></i><i style="background:var(--h4)"></i> Plus</span></div></section>`;
+  // Par quiz
+  const rows = MQJ.APPS.map(a => ({ a, s: J.apps[a.id] })).sort((x, y) => (y.s ? y.s.p : -1) - (x.s ? x.s.p : -1));
+  h += `<section class="card"><h2>Par quiz</h2>${rows.map(({a, s}) => {
+      if (!s) return `<a class="qrow" href="../../${a.href}" style="--c:${a.c}"><span class="qem">${a.em}</span><span><span class="qt">${esc(a.t)}</span><span class="qs" style="display:block">Pas encore joué</span></span><span class="qp muted">›</span></a>`;
+      const p = pct(s.g, s.n), now = windowAcc(a.id, 0, 7), before = windowAcc(a.id, 7, 14);
+      let trend = '';
+      if (now !== null && before !== null) { const d = Math.round((now - before) * 100); trend = d > 0 ? `<span class="up">▲ ${d} pts</span>` : d < 0 ? `<span class="down">▼ ${-d} pts</span>` : '='; }
+      return `<a class="qrow" href="../../${a.href}" style="--c:${a.c}"><span class="qem">${a.em}</span>
+        <span><span class="qt">${esc(a.t)}</span><span class="qs" style="display:block">${plural(s.p, 'partie')} · meilleure ${s.best} % · ${ago(s.last)}</span><span class="qbar"><i style="width:${p}%"></i></span></span>
+        <span class="qp">${p} %<small>${trend || 'réussite'}</small></span></a>`;
+    }).join('')}<p class="muted" style="font-size:12px;margin:8px 0 0">▲▼ : réussite des 7 derniers jours comparée aux 7 jours d’avant.</p></section>`;
+  // Badges
+  const B = badges(), nb = B.filter(b => b.ok).length;
+  h += `<section class="card"><h2>Badges · ${nb}/${B.length}</h2><div class="badges">${B.map(b => `<div class="bdg ${b.ok ? '' : 'lock'}"><span class="e">${b.e}</span><b>${b.t}</b><small>${b.d}${!b.ok && b.p ? ' · ' + b.p : ''}</small></div>`).join('')}</div></section>`;
+  // Dernières parties
+  const last = J.games.slice(-15).reverse();
+  h += `<section class="card"><h2>Dernières parties</h2><ul class="hist">${last.map(g => { const a = MQJ.app(g.a), d = new Date(g.t);
+      return `<li><span class="he">${a.em}</span><span><b>${esc(a.t)}</b>${g.m && g.m !== '*' ? ' · <span class="muted">' + esc(modeName(g.m)) + '</span>' : ''}<br><span class="muted">${fmtDay(d)} à ${d.getHours()} h ${String(d.getMinutes()).padStart(2, '0')}</span></span><span class="hs">${g.g}/${g.n}</span></li>`; }).join('')}</ul></section>`;
+  h += `<button class="danger" id="reset">Effacer mon historique</button>`;
+  $('#app').innerHTML = h;
+  drawChart(); drawCal(); wire();
+}
+
+function drawChart(){
+  const svg = $('#chart'), W = Math.max(280, Math.round(svg.getBoundingClientRect().width) || 600), H = 190, pl = 28, pr = 4, pt = 10, pb = 26;
+  const days = []; for (let i = range - 1; i >= 0; i--) { const d = MQJ.addDays(today, -i), k = MQJ.dayKey(d); days.push({ d, k, v: J.days[k] || { p:0, g:0, n:0 } }); }
+  const max = Math.max(10, ...days.map(x => x.v.n));
+  const step = max <= 20 ? 5 : max <= 50 ? 10 : max <= 100 ? 20 : 50, top = Math.ceil(max / step) * step;
+  const y = v => pt + (H - pt - pb) * (1 - v / top), bw = (W - pl - pr) / range, w = Math.max(4, Math.min(28, bw - 4));
+  let g = '';
+  for (let v = 0; v <= top; v += step) g += `<line x1="${pl}" x2="${W - pr}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${pl - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="var(--muted)">${v}</text>`;
+  days.forEach((x, i) => {
+    const cx = pl + bw * i + bw / 2, x0 = cx - w / 2, base = y(0), r = Math.min(4, w / 2);
+    const hg = base - y(x.v.g), hb = base - y(x.v.n - x.v.g);
+    let bars = '';
+    // Bonnes réponses en bas, ratées au-dessus (2 px d'écart), extrémité arrondie seulement en haut de la pile
+    if (hg > 0) bars += `<path d="${roundTop(x0, base - hg, w, hg, hb > 0 ? 0 : r)}" fill="var(--acc)"/>`;
+    if (hb > 0) bars += `<path d="${roundTop(x0, base - hg - hb - (hg > 0 ? 2 : 0), w, hb, r)}" fill="var(--acc-soft)"/>`;
+    const lab = range <= 14 || i % 3 === (range - 1) % 3 ? `<text x="${cx}" y="${H - 10}" text-anchor="middle" font-size="11" fill="${x.k === tk ? 'var(--ink)' : 'var(--muted)'}" font-weight="${x.k === tk ? 800 : 400}">${range <= 7 ? JOURS[x.d.getDay()] : x.d.getDate()}</text>` : '';
+    g += `<g class="bar${x.k === selDay ? ' sel' : ''}" data-k="${x.k}"><rect class="hit" x="${pl + bw * i}" y="${pt}" width="${bw}" height="${H - pt - pb}" fill="transparent" rx="6"/>${bars}${lab}</g>`;
+  });
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.innerHTML = g;
+  showDay(selDay);
+}
+function roundTop(x, y, w, h, r){
+  r = Math.min(r, h);
+  return `M${x},${y + h}V${y + r}Q${x},${y} ${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h}Z`;
+}
+function showDay(k){
+  selDay = k;
+  document.querySelectorAll('#chart .bar').forEach(b => b.classList.toggle('sel', b.dataset.k === k));
+  const v = J.days[k], d = dOf(k), el = $('#detail');
+  if (!el) return;
+  if (!v) { el.innerHTML = `<b>${k === tk ? 'Aujourd’hui' : fmtDay(d)}</b> · pas de partie`; return; }
+  const per = Object.keys(v.a || {}).filter(id => v.a[id] > 0).map(id => MQJ.app(id).em + ' ' + v.a[id]).join('  ');
+  el.innerHTML = `<b>${k === tk ? 'Aujourd’hui' : fmtDay(d)}</b> · ${plural(v.p, 'partie')} · ${v.g}/${v.n} bonnes réponses (<b>${pct(v.g, v.n)} %</b>)<br><span class="muted">${per}</span>`;
+}
+function drawCal(){
+  const weeks = 18, start = MQJ.addDays(today, -((today.getDay() + 6) % 7) - (weeks - 1) * 7);
+  let h = '';
+  for (let i = 0; i < weeks * 7; i++) {
+    const d = MQJ.addDays(start, i), k = MQJ.dayKey(d), v = J.days[k];
+    if (d > today) { h += '<i class="fut"></i>'; continue; }
+    const n = v ? v.p : 0, l = n === 0 ? 0 : n === 1 ? 1 : n <= 3 ? 2 : n <= 6 ? 3 : 4;
+    h += `<i class="l${l}${k === tk ? ' now' : ''}" title="${fmtDay(d)} : ${plural(n, 'partie')}"></i>`;
+  }
+  $('#cal').innerHTML = h;
+  $('#calspan').textContent = 'Depuis le ' + start.getDate() + ' ' + MOIS[start.getMonth()];
+}
+function wire(){
+  $('#ava').addEventListener('click', () => $('#picker').classList.toggle('on'));
+  $('#picker').addEventListener('click', e => { const b = e.target.closest('[data-av]'); if (!b) return; P.avatar = b.dataset.av; MQJ.saveProfile(P); render(); });
+  $('#name').addEventListener('change', e => { P.name = e.target.value.trim(); MQJ.saveProfile(P); });
+  $('#gm').addEventListener('click', () => { P.goal = Math.max(1, P.goal - 1); MQJ.saveProfile(P); render(); });
+  $('#gp').addEventListener('click', () => { P.goal = Math.min(20, P.goal + 1); MQJ.saveProfile(P); render(); });
+  const seg = document.querySelector('.seg'); if (seg) seg.addEventListener('click', e => { const b = e.target.closest('[data-r]'); if (b) { range = +b.dataset.r; render(); } });
+  const ch = $('#chart'); if (ch) ch.addEventListener('click', e => { const b = e.target.closest('.bar'); if (b) showDay(b.dataset.k); });
+  const rs = $('#reset'); if (rs) rs.addEventListener('click', () => {
+    if (confirm('Effacer tout ton historique de parties ? Les records de chaque quiz sont conservés.')) { MQJ.reset(); location.reload(); }
+  });
+}
+render();
+let rw = innerWidth; addEventListener('resize', () => { if (Math.abs(innerWidth - rw) > 30 && $('#chart')) { rw = innerWidth; drawChart(); } });
+})();
+</script>
+</body>
+</html>

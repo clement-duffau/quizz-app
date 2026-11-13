@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="../../shared/fonts/fonts.css">
 <script src="../../shared/capacitor.js"></script>
 <script src="../../shared/shell.js"></script>
+<script src="../../shared/journal.js"></script>
 <style>
 :root{--bg:#EEF0FF;--surface:#FFFFFF;--ink:#19164A;--muted:#5F5C8F;--primary:#3B2EF0;--sun:#FFC93C;--pink:#FF4D8D;--good:#14A862;--bad:#E8392F;--line:#D6D8F5;color-scheme:light}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#110F38;--surface:#1D1957;--ink:#F3F2FF;--muted:#A9A6DA;--primary:#6F64FF;--line:#2F2A78;color-scheme:dark}}
@@ -489,6 +490,7 @@ function finish() {
   // compteur animé
   const el = $("#endScore"), target = S.score, t0 = performance.now(), dur = reduced ? 0 : 1100;
   (function count(t){ const p = dur ? Math.min(1, (t - t0) / dur) : 1; el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(count); })(t0);
+  if (window.MQJ) MQJ.log({ a: "culture", m: S.mode, g: S.good, n: 10, s: S.score });
   const key = "quizcult-best-" + S.mode, best = store.get(key) || 0;
   if (S.score > best) {
     store.set(key, S.score);

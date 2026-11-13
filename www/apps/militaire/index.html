@@ -8,6 +8,8 @@
 <link rel="stylesheet" href="../../shared/fonts/fonts.css">
 <script src="../../shared/capacitor.js"></script>
 <script src="../../shared/shell.js"></script>
+<script src="../../shared/journal.js"></script>
+<script src="img/credits.js"></script>
 <style>
 :root{
   --bg:#E4E8E3; --panel:#F4F6F2; --ink:#1B2730; --ink2:#4A5A63; --line:#C2CBC5;
@@ -132,6 +134,20 @@ details.item summary::-webkit-details-marker{display:none}
 .dm{color:var(--ink2)}
 .item .body{padding:4px 14px 18px}
 .empty{margin-top:22px;color:var(--ink2)}
+/* Photos (Wikimedia Commons) */
+.ph{margin:0 0 16px;border:1px solid var(--line);border-radius:3px;overflow:hidden;background:var(--bg)}
+.ph img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;max-height:360px}
+.ph figcaption{font-size:11px;line-height:1.3;color:var(--ink2);padding:5px 8px;overflow-wrap:anywhere}
+.ph.mini{max-width:420px}
+.ph.mini img{max-height:220px}
+.fcard .ph{margin:-6px 0 18px}
+.qcard .ph{margin:14px 0 0}
+details.item summary{align-items:center;flex-wrap:nowrap;gap:12px}
+details.item summary .sx{display:flex;flex-wrap:wrap;gap:2px 16px;align-items:baseline;min-width:0}
+.thumb{flex:none;width:72px;height:48px;object-fit:cover;border-radius:3px;background:var(--line)}
+.credits{margin-top:28px;font-size:13px;color:var(--ink2)}
+.credits summary{cursor:pointer;font-weight:600}
+.credits ol{padding-left:20px;margin:10px 0 0;display:grid;gap:4px;overflow-wrap:anywhere}
 footer{margin-top:40px;color:var(--ink2);font-size:14px;max-width:70ch}
 @media (prefers-reduced-motion:reduce){.bar i{animation:none}}
 </style>
@@ -328,6 +344,13 @@ function valHtml(k,v){
   if(k==='speed_mach')return `<span class="unit">Mach</span><span class="num">${num(v)}</span>`;
   return `<span class="num">${num(v)}</span>${u?`<span class="unit">${u}</span>`:''}`;
 }
+const IMG=window.MM_IMG||{};
+const hasImg=it=>!!IMG[it.n];
+function photo(it,cls){
+  const p=IMG[it.n];if(!p)return '';
+  return `<figure class="ph ${cls||''}"><img src="img/${esc(p.f)}" width="${p.w}" height="${p.h}" alt="Photo : ${esc(it.n)}" decoding="async" onerror="this.parentNode.remove()">
+    <figcaption>Photo : ${esc(p.a||'auteur inconnu')}${p.l?' · '+esc(p.l):''} · Wikimedia Commons</figcaption></figure>`;
+}
 const cname=it=>COUNTRIES[it.c].n;
 const inCountry=(it,cc)=>!cc||COUNTRIES[it.c].p.includes(cc);
 
@@ -436,6 +459,14 @@ function qCty(it){
   return {sig:'p|'+it.id,kind:'Origine',text:`Quel pays a conçu ou fabriqué « ${it.n} » ?`,item:it,
     choices:shuffle([{t:cname(it),ok:true},...pick(names,3).map(t=>({t}))]),answer:cname(it),reveal:'sheet'};
 }
+function qImg(it){
+  if(!hasImg(it))return null;
+  let peers=D.filter(x=>x.cat===it.cat&&x.id!==it.id);
+  if(peers.length<3)peers=D.filter(x=>x.dom===it.dom&&x.id!==it.id);
+  if(peers.length<3)return null;
+  return {sig:'g|'+it.id,kind:'Photo · '+it.cat,text:'Quel est cet équipement ?',item:it,img:true,
+    choices:shuffle([{t:it.n,ok:true},...pick(peers,3).map(x=>({t:x.n}))]),answer:it.n,reveal:'sheet'};
+}
 function weighted(a){const t=a.reduce((s,x)=>s+x[1],0);let r=Math.random()*t;for(const [k,w] of a){if((r-=w)<0)return k;}return a[0][0];}
 function buildQuiz(n){
   const p=shuffle(pool());const qs=[];const seen=new Set();
@@ -443,10 +474,10 @@ function buildQuiz(n){
   let idx=0,guard=0;
   while(qs.length<n&&guard++<n*40){
     const it=p[idx++%p.length];
-    const types=[['num',5],['cmp',2],['id',2]];
-    if(!st.country)types.push(['cty',2]);
+    const types=st.qz.photo?[['img',1]]:[['num',5],['cmp',2],['id',2],['img',3]];
+    if(!st.country&&!st.qz.photo)types.push(['cty',2]);
     const t=weighted(types);
-    const q=t==='num'?qNum(it):t==='cmp'?qCmp(it):t==='id'?qId(it):qCty(it);
+    const q=t==='num'?qNum(it):t==='cmp'?qCmp(it):t==='id'?qId(it):t==='img'?qImg(it):qCty(it);
     if(!q||seen.has(q.sig))continue;
     seen.add(q.sig);qs.push(q);
   }
@@ -499,18 +530,18 @@ function viewFiches(){
   let card;
   if(!f.reverse&&!f.flipped){
     card=`<article class="fcard front" id="fc" tabindex="0" role="button" data-a="flip" aria-label="Retourner la fiche : ${esc(it.n)}">
-      <p class="tag">${esc(it.cat)}</p><h2 class="fname">${esc(it.n)}</h2>
+      ${photo(it)}<p class="tag">${esc(it.cat)}</p><h2 class="fname">${esc(it.n)}</h2>
       <p class="fhint">Retrouver le pays, l’année et les chiffres clés, puis retourner la fiche.</p></article>`;
   }else if(!f.reverse){
     card=`<article class="fcard" id="fc" tabindex="0" role="button" data-a="flip" aria-label="Retourner la fiche">
-      <h2 class="fname small">${esc(it.n)}</h2><p class="fmeta">${esc(cname(it))} — ${esc(it.cat)}</p>${sheet(it)}
+      ${photo(it,'mini')}<h2 class="fname small">${esc(it.n)}</h2><p class="fmeta">${esc(cname(it))} — ${esc(it.cat)}</p>${sheet(it)}
       ${it.note?`<p class="note">${esc(it.note)}</p>`:''}</article>`;
   }else if(!f.flipped){
     card=`<article class="fcard" id="fc" tabindex="0" role="button" data-a="flip" aria-label="Retourner la fiche">
       <p class="tag">${esc(it.cat)}</p><h2 class="fname small">Quel équipement, et quel pays ?</h2><p class="fmeta">Retourner la fiche pour vérifier.</p>${sheet(it)}</article>`;
   }else{
     card=`<article class="fcard front" id="fc" tabindex="0" role="button" data-a="flip" aria-label="Retourner la fiche">
-      <p class="tag">${esc(cname(it))} — ${esc(it.cat)}</p><h2 class="fname">${esc(it.n)}</h2>
+      ${photo(it)}<p class="tag">${esc(cname(it))} — ${esc(it.cat)}</p><h2 class="fname">${esc(it.n)}</h2>
       ${it.note?`<p class="note">${esc(it.note)}</p>`:''}</article>`;
   }
   return opts+`<div class="prog"><span>Fiche ${f.i+1} sur ${f.deck.length}</span><span>${known.size} acquise${known.size>1?'s':''} sur ${D.length}</span></div>
@@ -527,6 +558,7 @@ function viewQuiz(){
     return `<div class="panel"><h2>Quiz chiffré</h2>
       <p>Chaque question porte sur des chiffres à retenir : année de mise en service, masse, vitesse, portée, dimensions, équipage… Certaines demandent de comparer des équipements, d’autres d’identifier un équipement à partir de ses chiffres.</p>
       <p>${n?`Sélection actuelle : ${n} équipement${n>1?'s':''}.`:'Aucun équipement dans cette sélection.'}</p>
+      <div class="seg" role="group" aria-label="Type de questions"><button class="chip" data-a="qphoto" data-v="0" aria-pressed="${!q.photo}">Chiffres et photos</button><button class="chip" data-a="qphoto" data-v="1" aria-pressed="${!!q.photo}">📷 Photos seulement</button></div>
       <div class="seg" role="group" aria-label="Nombre de questions">${[10,20,30].map(v=>`<button class="chip" data-a="qn" data-v="${v}" aria-pressed="${q.n===v}">${v} questions</button>`).join('')}</div>
       <div class="actions" style="max-width:320px"><button class="btn primary" data-a="qstart" ${n?'':'disabled'}>Commencer</button></div>
       ${best?`<p class="fhint">Meilleur score : ${best} %</p>`:''}</div>`;
@@ -549,13 +581,13 @@ function viewQuiz(){
   if(answered){
     const body=cur.reveal==='list'
       ?`<ul class="cmp">${cur.list.map((x,i)=>`<li class="${i===0?'best':''}"><span>${esc(x.n)}</span><span>${esc(x.v)}</span></li>`).join('')}</ul>`
-      :sheet(cur.item)+(cur.item.note?`<p class="note">${esc(cur.item.note)}</p>`:'');
+      :(cur.img?'':photo(cur.item,'mini'))+sheet(cur.item)+(cur.item.note?`<p class="note">${esc(cur.item.note)}</p>`:'');
     reveal=`<div class="reveal"><p class="verdict ${isRight?'good':'wrong'}">${isRight?'Bonne réponse.':'Mauvaise réponse.'} ${isRight?'':`La bonne réponse : ${esc(cur.answer)}.`}</p>${body}
       <div class="actions"><button class="btn primary" id="next" data-a="next">${last?'Voir le résultat':'Question suivante'}</button></div></div>`;
   }
   return `<div class="prog"><span>Question ${q.i+1} sur ${q.qs.length}</span><span>Score : ${q.score}</span></div>
     <div class="meter" aria-hidden="true"><i style="width:${pct}%"></i></div>
-    <article class="qcard"><p class="tag">${esc(cur.kind)}</p><h2 class="qtext">${esc(cur.text)}</h2>
+    <article class="qcard"><p class="tag">${esc(cur.kind)}</p><h2 class="qtext">${esc(cur.text)}</h2>${cur.img?photo(cur.item):''}
     ${cur.hints?`<ul class="hints">${cur.hints.map(h=>`<li>${esc(h.l)} : <b>${esc(h.v)}</b></li>`).join('')}</ul>`:''}
     <div class="choices">${cur.choices.map((c,i)=>{
       let cls='';if(answered){if(c.ok)cls='ok';else if(i===q.sel)cls='bad';}
@@ -571,14 +603,16 @@ function catList(){
   else if(c.sort==='pays')list.sort((a,b)=>cname(a).localeCompare(cname(b),'fr')||a.n.localeCompare(b.n,'fr'));
   else list.sort((a,b)=>(a.s.year??9999)-(b.s.year??9999)||a.n.localeCompare(b.n,'fr'));
   if(!list.length)return '<p class="empty">Aucun équipement ne correspond à cette recherche.</p>';
-  return list.map(it=>`<details class="item"><summary><span class="dn">${esc(it.n)}</span><span class="dm">${esc(cname(it))}, ${esc(it.cat)}${it.s.year?`, ${it.s.year}`:''}</span></summary>
-    <div class="body">${sheet(it)}${it.note?`<p class="note">${esc(it.note)}</p>`:''}</div></details>`).join('');
+  return list.map(it=>`<details class="item"><summary>${hasImg(it)?`<img class="thumb" src="img/${esc(IMG[it.n].f)}" alt="" loading="lazy" decoding="async" onerror="this.remove()">`:''}<span class="sx"><span class="dn">${esc(it.n)}</span><span class="dm">${esc(cname(it))}, ${esc(it.cat)}${it.s.year?`, ${it.s.year}`:''}</span></span></summary>
+    <div class="body">${photo(it,'mini')}${sheet(it)}${it.note?`<p class="note">${esc(it.note)}</p>`:''}</div></details>`).join('');
 }
 function viewCatalogue(){
   const c=st.cat;
   return `<div class="tools"><input class="search" type="search" data-c="q" placeholder="Rechercher un nom, un pays, une catégorie" aria-label="Rechercher" value="${esc(c.q)}">
     <select class="select" data-c="sort" aria-label="Trier par"><option value="nom" ${c.sort==='nom'?'selected':''}>Trier par nom</option><option value="pays" ${c.sort==='pays'?'selected':''}>Trier par pays</option><option value="annee" ${c.sort==='annee'?'selected':''}>Trier par année</option></select></div>
-    <div id="catlist">${catList()}</div>`;
+    <div id="catlist">${catList()}</div>
+    <details class="credits"><summary>Crédits des photos</summary><p>Photos issues de Wikimedia Commons, réduites pour l’appli. Auteur, licence et page d’origine :</p>
+    <ol>${D.filter(hasImg).map(it=>{const p=IMG[it.n];return `<li><b>${esc(it.n)}</b> : ${esc(p.a||'auteur inconnu')}, ${esc(p.l||'licence non précisée')} — ${esc(p.u)}</li>`;}).join('')}</ol></details>`;
 }
 
 /* ---------- Rendu global ---------- */
@@ -589,7 +623,7 @@ function render(focusId){
 }
 function resetSession(){
   st.fc.started=false;
-  st.qz={phase:'setup',n:st.qz.n,qs:[],i:0,sel:null,score:0,missed:[]};
+  st.qz={phase:'setup',n:st.qz.n,photo:st.qz.photo,qs:[],i:0,sel:null,score:0,missed:[]};
 }
 
 /* ---------- Actions ---------- */
@@ -604,7 +638,9 @@ function act(a,el){
       const id=f.deck[f.i];
       if(a==='know'){known.add(id);f.sues++;store.set('mm_known_v1',[...known]);}
       else f.again.push(id);
-      f.i++;f.flipped=false;render(f.i<f.deck.length?'fc':null);break;
+      f.i++;f.flipped=false;
+      if(f.i===f.deck.length&&window.MQJ)MQJ.log({a:'militaire',m:'fiches',g:f.sues,n:f.deck.length});
+      render(f.i<f.deck.length?'fc':null);break;
     case 'redoAgain':fcStart(f.again.slice());render('fc');break;
     case 'fcRestart':fcStart();render('fc');break;
     case 'resetKnown':known=new Set();store.set('mm_known_v1',[]);fcStart();render();break;
@@ -612,8 +648,9 @@ function act(a,el){
     case 'qstart':{
       const qs=buildQuiz(q.n);
       if(!qs.length)break;
-      st.qz={phase:'play',n:q.n,qs,i:0,sel:null,score:0,missed:[]};render();break;}
-    case 'qsetup':st.qz={phase:'setup',n:q.n,qs:[],i:0,sel:null,score:0,missed:[]};render();break;
+      st.qz={phase:'play',n:q.n,photo:q.photo,qs,i:0,sel:null,score:0,missed:[]};render();break;}
+    case 'qsetup':st.qz={phase:'setup',n:q.n,photo:q.photo,qs:[],i:0,sel:null,score:0,missed:[]};render();break;
+    case 'qphoto':q.photo=el.dataset.v==='1';render();break;
     case 'pick':{
       if(q.phase!=='play'||q.sel!==null)break;
       const i=+el.dataset.i;const cur=q.qs[q.i];
@@ -629,6 +666,7 @@ function act(a,el){
         q.phase='end';
         const pct=Math.round(q.score/q.qs.length*100);
         if(pct>best){best=pct;store.set('mm_best_v1',best);}
+        if(window.MQJ)MQJ.log({a:'militaire',m:'quiz',g:q.score,n:q.qs.length,s:pct});
       }else{q.i++;q.sel=null;}
       render();window.scrollTo({top:0});break;}
     case 'missedToCards':{
