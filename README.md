@@ -17,7 +17,7 @@ Appli Android qui regroupe mes quiz :
 À chaque `push` sur `main`, GitHub construit l'APK tout seul (onglet **Actions**, ~5 min)
 et le publie dans **Releases**.
 
-1. Sur le téléphone, ouvrir `https://github.com/<ton-compte>/mes-quiz/releases/latest`.
+1. Sur le téléphone, ouvrir `https://github.com/clement-duffau/quizz-app/releases/latest`.
 2. Toucher **MesQuiz.apk** pour le télécharger, puis l'ouvrir.
 3. La première fois, Android demande d'autoriser l'installation depuis le navigateur : accepter.
 
