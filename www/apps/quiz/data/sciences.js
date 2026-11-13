@@ -1,0 +1,86 @@
+/* Sciences & espace */
+(function(){
+const E = '🪐', C = '⚗️', P = '⚡', V = '🧬';
+const items = [
+ // Espace
+ {k:'Espace',e:E,q:"Combien de planètes compte le système solaire ?",r:"8",w:["9","7","10"],f:"Pluton a été reclassée « planète naine » en 2006."},
+ {k:'Espace',e:E,q:"Quelle est la plus grande lune du système solaire ?",r:"Ganymède",w:["Titan","La Lune","Europe"],f:"Satellite de Jupiter, elle est plus grande que la planète Mercure."},
+ {k:'Espace',e:E,q:"Comment s'appellent les deux lunes de Mars ?",r:"Phobos et Deimos",w:["Io et Europe","Titan et Rhéa","Castor et Pollux"],f:"La peur et la terreur, les fils du dieu de la guerre."},
+ {k:'Espace',e:E,q:"Quel âge a le Soleil, environ ?",r:"4,6 milliards d'années",w:["460 millions d'années","13,8 milliards d'années","46 milliards d'années"],f:"Il est à peu près à la moitié de sa vie."},
+ {k:'Espace',e:E,q:"Quelle est la distance moyenne entre la Terre et le Soleil ?",r:"150 millions de km",w:["15 millions de km","1,5 milliard de km","384 000 km"],f:"Cette distance définit l'unité astronomique (ua). 384 000 km, c'est la Lune."},
+ {k:'Espace',e:E,q:"Quelle est l'étoile la plus proche du Soleil ?",r:"Proxima du Centaure",w:["Sirius","Bételgeuse","L'étoile Polaire"],f:"À environ 4,2 années-lumière."},
+ {k:'Espace',e:E,q:"Une année-lumière, c'est…",r:"Une distance",w:["Une durée","Une vitesse","Une luminosité"],f:"La distance parcourue par la lumière en un an : environ 9 500 milliards de km."},
+ {k:'Espace',e:E,q:"Quelle est la grande galaxie voisine de la Voie lactée ?",r:"Andromède",w:["Orion","La Grande Ourse","Le Sombrero"],f:"Elle se rapproche de nous et devrait fusionner avec la Voie lactée dans quelques milliards d'années."},
+ {k:'Espace',e:E,q:"À quelle altitude orbite la Station spatiale internationale ?",r:"Environ 400 km",w:["Environ 36 000 km","Environ 40 km","Environ 4 000 km"],f:"36 000 km, c'est l'orbite géostationnaire des satellites télécoms."},
+ {k:'Espace',e:E,q:"En combien de temps l'ISS fait-elle le tour de la Terre ?",r:"Environ 90 minutes",w:["Environ 24 heures","Environ 12 heures","Environ 10 minutes"],f:"Les astronautes voient environ 16 levers de soleil par jour."},
+ {k:'Espace',e:E,q:"Quand le télescope spatial James Webb a-t-il été lancé ?",r:"2021",w:["1990","2009","2018"],f:"Le 25 décembre 2021, par une fusée Ariane 5 depuis Kourou. 1990, c'est Hubble."},
+ {k:'Espace',e:E,q:"Où se trouve la base de lancement des fusées Ariane ?",r:"À Kourou, en Guyane",w:["À Toulouse","À Cap Canaveral","À Baïkonour"],f:"Près de l'équateur, la rotation de la Terre donne un coup de pouce aux fusées."},
+ {k:'Espace',e:E,q:"Qui est la première femme à être allée dans l'espace ?",r:"Valentina Terechkova",w:["Sally Ride","Claudie Haigneré","Svetlana Savitskaïa"],f:"En juin 1963, à bord de Vostok 6."},
+ {k:'Espace',e:E,q:"Qui est le premier Français à être allé dans l'espace ?",r:"Jean-Loup Chrétien",w:["Thomas Pesquet","Patrick Baudry","Jean-François Clervoy"],f:"En 1982, à bord de la station soviétique Saliout 7."},
+ {k:'Espace',e:E,q:"Quelle planète tourne « couchée » sur le côté ?",r:"Uranus",w:["Neptune","Saturne","Mars"],f:"Son axe est incliné d'environ 98°, sans doute après une énorme collision."},
+ {k:'Espace',e:E,q:"Sur quelle planète se trouve la Grande Tache rouge ?",r:"Jupiter",w:["Mars","Saturne","Vénus"],f:"Une tempête géante, plus large que la Terre, observée depuis des siècles."},
+ {k:'Espace',e:E,q:"Où se trouve Olympus Mons, le plus haut volcan connu du système solaire ?",r:"Sur Mars",w:["Sur Vénus","Sur la Lune","Sur Io"],f:"Environ 22 km de haut, presque trois fois l'Everest."},
+ {k:'Espace',e:E,q:"Quelle est la planète la plus chaude du système solaire ?",r:"Vénus",w:["Mercure","Mars","Jupiter"],f:"Environ 460 °C en surface à cause de son épaisse atmosphère de CO₂."},
+ {k:'Espace',e:E,q:"Tous les combien d'années revient la comète de Halley ?",r:"Environ 76 ans",w:["Environ 7 ans","Environ 250 ans","Environ 1 000 ans"],f:"Dernier passage en 1986, prochain vers 2061."},
+ {k:'Espace',e:E,q:"Quelle est la planète la plus éloignée du Soleil ?",r:"Neptune",w:["Uranus","Pluton","Saturne"],f:"Pluton est plus loin, mais ce n'est plus une planète."},
+ {k:'Espace',e:E,q:"Combien de temps met la lumière du Soleil pour atteindre la Terre ?",r:"Environ 8 minutes",w:["Environ 8 secondes","Environ 1 heure","Instantanément"],f:"8 min 20 s en moyenne : on voit toujours le Soleil avec un peu de retard."},
+ {k:'Espace',e:E,q:"Comment s'appelait le premier satellite artificiel ?",r:"Spoutnik 1",w:["Explorer 1","Vostok 1","Telstar"],f:"Lancé par l'URSS le 4 octobre 1957. Il émettait un « bip » radio."},
+ // Chimie
+ {k:'Chimie',e:C,q:"Quel élément a pour symbole Na ?",r:"Le sodium",w:["L'azote","Le néon","Le nickel"],f:"Du latin natrium. L'azote, c'est N."},
+ {k:'Chimie',e:C,q:"Quel élément a pour symbole K ?",r:"Le potassium",w:["Le krypton","Le calcium","Le cobalt"],f:"Du latin kalium. Le krypton, c'est Kr."},
+ {k:'Chimie',e:C,q:"Quel élément a pour symbole Ag ?",r:"L'argent",w:["L'or","L'aluminium","L'argon"],f:"Du latin argentum. L'argon, c'est Ar."},
+ {k:'Chimie',e:C,q:"Quel élément a pour symbole Pb ?",r:"Le plomb",w:["Le phosphore","Le platine","Le palladium"],f:"Du latin plumbum, qui a aussi donné « plombier »."},
+ {k:'Chimie',e:C,q:"Quel métal est liquide à température ambiante ?",r:"Le mercure",w:["Le plomb","L'étain","Le zinc"],f:"Son symbole Hg vient du grec hydrargyrum, « argent liquide »."},
+ {k:'Chimie',e:C,q:"Quel est le pH d'une solution neutre à 25 °C ?",r:"7",w:["0","1","14"],f:"En dessous c'est acide, au-dessus c'est basique."},
+ {k:'Chimie',e:C,q:"Qui a créé le tableau périodique des éléments en 1869 ?",r:"Dmitri Mendeleïev",w:["Antoine Lavoisier","John Dalton","Marie Curie"],f:"Il a même laissé des cases vides pour des éléments pas encore découverts."},
+ {k:'Chimie',e:C,q:"Quelle est la formule du sel de cuisine ?",r:"NaCl",w:["KCl","CaCO₃","NaOH"],f:"Chlorure de sodium. NaOH, c'est la soude."},
+ {k:'Chimie',e:C,q:"De quel élément est fait un diamant ?",r:"Du carbone",w:["Du silicium","Du quartz","Du bore"],f:"Le graphite des crayons est aussi du carbone pur, mais organisé autrement."},
+ {k:'Chimie',e:C,q:"Quelle est la formule de l'ozone ?",r:"O₃",w:["O₂","CO₂","H₂O₂"],f:"La couche d'ozone filtre une grande partie des UV du Soleil."},
+ {k:'Chimie',e:C,q:"« Rien ne se perd, rien ne se crée, tout se transforme » : de qui est cette idée ?",r:"Lavoisier",w:["Pasteur","Newton","Mendeleïev"],f:"La conservation de la masse, à la fin du XVIIIe siècle."},
+ {k:'Chimie',e:C,q:"Quel gaz noble fait briller les enseignes rouge-orangé ?",r:"Le néon",w:["L'hélium","Le chlore","L'hydrogène"],f:"Les autres couleurs viennent souvent d'autres gaz ou de poudres fluorescentes."},
+ {k:'Chimie',e:C,q:"Quel gaz rend les ballons plus légers que l'air et la voix aiguë ?",r:"L'hélium",w:["L'hydrogène","L'azote","Le néon"],f:"Le son se propage plus vite dans l'hélium, d'où la voix de canard."},
+ {k:'Chimie',e:C,q:"Quel est le numéro atomique de l'hydrogène ?",r:"1",w:["0","2","8"],f:"Un seul proton : c'est l'atome le plus simple."},
+ // Physique
+ {k:'Physique',e:P,q:"Quelle est l'unité de la puissance ?",r:"Le watt",w:["Le joule","Le volt","Le newton"],f:"En hommage à James Watt. 1 W = 1 J/s."},
+ {k:'Physique',e:P,q:"Quelle est l'unité de l'énergie ?",r:"Le joule",w:["Le watt","Le pascal","Le coulomb"],f:"Le kWh de ta facture vaut 3,6 millions de joules."},
+ {k:'Physique',e:P,q:"Quelle est l'unité de la capacité d'un condensateur ?",r:"Le farad",w:["Le henry","Le siemens","Le weber"],f:"En hommage à Michael Faraday."},
+ {k:'Physique',e:P,q:"Quelle est l'unité de l'inductance ?",r:"Le henry",w:["Le farad","Le tesla","L'ohm"],f:"En hommage à Joseph Henry."},
+ {k:'Physique',e:P,q:"Quelle est l'unité du champ magnétique ?",r:"Le tesla",w:["Le lux","Le weber","Le henry"],f:"On croise aussi l'ancienne unité, le gauss : 1 T = 10 000 G."},
+ {k:'Physique',e:P,q:"Quelle est la vitesse du son dans l'air, environ ?",r:"340 m/s",w:["34 m/s","3 400 m/s","300 000 km/s"],f:"Compte les secondes entre l'éclair et le tonnerre, divise par 3 : tu as la distance en km."},
+ {k:'Physique',e:P,q:"Quelle est l'accélération de la pesanteur sur Terre ?",r:"9,81 m/s²",w:["1,62 m/s²","98,1 m/s²","3,71 m/s²"],f:"Sur la Lune, c'est environ 1,62 m/s²."},
+ {k:'Physique',e:P,q:"À combien de degrés Celsius correspond le zéro absolu ?",r:"−273,15 °C",w:["−100 °C","−459,67 °C","−173,15 °C"],f:"0 kelvin : impossible d'aller plus bas. −459,67, c'est en Fahrenheit."},
+ {k:'Physique',e:P,q:"Pourquoi le ciel est-il bleu ?",r:"L'air diffuse plus le bleu que le rouge",w:["Il reflète la couleur des océans","L'ozone est bleu","Le Soleil émet surtout du bleu"],f:"C'est la diffusion de Rayleigh, qui croît comme 1/λ⁴."},
+ {k:'Physique',e:P,q:"Dans E = mc², que représente c ?",r:"La vitesse de la lumière",w:["Une constante de charge","La chaleur","La capacité"],f:"Un peu de masse correspond à une énorme énergie, car c² est gigantesque."},
+ {k:'Physique',e:P,q:"Quelle est l'unité de la pression ?",r:"Le pascal",w:["Le tesla","Le newton","Le joule"],f:"1 bar = 100 000 Pa ; la pression atmosphérique est d'environ 1 013 hPa."},
+ {k:'Physique',e:P,q:"Quelle est la fréquence du courant du secteur en France ?",r:"50 Hz",w:["60 Hz","230 Hz","100 Hz"],f:"Les États-Unis sont en 60 Hz et 120 V."},
+ {k:'Physique',e:P,q:"Quel phénomène sépare la lumière blanche en arc-en-ciel dans un prisme ?",r:"La dispersion",w:["La diffraction","L'interférence","La polarisation"],f:"L'indice du verre dépend de la longueur d'onde, donc chaque couleur est déviée différemment."},
+ {k:'Physique',e:P,q:"Qui a découvert la radioactivité naturelle en 1896 ?",r:"Henri Becquerel",w:["Marie Curie","Ernest Rutherford","Wilhelm Röntgen"],f:"Avec des sels d'uranium. Il a partagé le Nobel 1903 avec Pierre et Marie Curie."},
+ // Vivant
+ {k:'Vivant',e:V,q:"Quel est l'animal terrestre le plus rapide ?",r:"Le guépard",w:["Le lion","L'antilope","Le lévrier"],f:"Plus de 100 km/h en pointe, mais seulement sur quelques centaines de mètres."},
+ {k:'Vivant',e:V,q:"Combien de cavités compte le cœur humain ?",r:"4",w:["2","3","6"],f:"Deux oreillettes et deux ventricules."},
+ {k:'Vivant',e:V,q:"Combien de litres de sang contient le corps d'un adulte, environ ?",r:"5 litres",w:["1 litre","10 litres","20 litres"],f:"Le cœur pompe l'équivalent de tout ce volume chaque minute environ au repos."},
+ {k:'Vivant',e:V,q:"Quelle molécule transporte l'oxygène dans les globules rouges ?",r:"L'hémoglobine",w:["L'insuline","La kératine","L'adrénaline"],f:"Elle contient du fer, d'où la couleur rouge du sang."},
+ {k:'Vivant',e:V,q:"Quel est le plus petit os du corps humain ?",r:"L'étrier",w:["Le coccyx","La phalange du petit orteil","L'os hyoïde"],f:"Dans l'oreille moyenne, il mesure environ 3 mm."},
+ {k:'Vivant',e:V,q:"Qui a décrit la structure en double hélice de l'ADN en 1953 ?",r:"Watson et Crick",w:["Darwin et Wallace","Pasteur et Koch","Mendel et Morgan"],f:"Grâce notamment aux clichés de diffraction X de Rosalind Franklin."},
+ {k:'Vivant',e:V,q:"Quel gaz les plantes rejettent-elles grâce à la photosynthèse ?",r:"Du dioxygène",w:["Du dioxyde de carbone","De l'azote","Du méthane"],f:"Elles captent le CO₂ et la lumière pour fabriquer des sucres."},
+ {k:'Vivant',e:V,q:"Quel est le plus grand oiseau du monde ?",r:"L'autruche",w:["Le condor","L'albatros","L'aigle royal"],f:"Jusqu'à 2,7 m de haut, mais elle ne vole pas."},
+ {k:'Vivant',e:V,q:"Quel est le seul mammifère capable de voler vraiment ?",r:"La chauve-souris",w:["L'écureuil volant","Le colugo","L'ornithorynque"],f:"Les écureuils volants ne font que planer."},
+ {k:'Vivant',e:V,q:"Le dauphin est…",r:"Un mammifère",w:["Un poisson","Un amphibien","Un reptile"],f:"Il respire de l'air et allaite ses petits."},
+ {k:'Vivant',e:V,q:"Quel est l'arbre le plus haut du monde ?",r:"Le séquoia à feuilles d'if",w:["Le baobab","Le chêne","L'eucalyptus géant"],f:"Le record, « Hyperion » en Californie, dépasse 115 m."},
+ {k:'Vivant',e:V,q:"Qui a proposé la théorie de l'évolution par la sélection naturelle ?",r:"Charles Darwin",w:["Jean-Baptiste Lamarck","Gregor Mendel","Louis Pasteur"],f:"« De l'origine des espèces » est paru en 1859."},
+ {k:'Vivant',e:V,q:"Combien de pattes a un insecte ?",r:"6",w:["8","4","10"],f:"8 pattes, c'est un arachnide comme l'araignée."},
+ {k:'Vivant',e:V,q:"Quel organe filtre le sang pour produire l'urine ?",r:"Les reins",w:["Le foie","La vessie","La rate"],f:"Ils produisent environ 180 litres de filtrat par jour, presque entièrement réabsorbé."},
+ {k:'Vivant',e:V,q:"Combien de temps dure en moyenne une grossesse chez l'éléphant ?",r:"Environ 22 mois",w:["Environ 9 mois","Environ 12 mois","Environ 36 mois"],f:"Le record de durée chez les mammifères terrestres."}
+];
+window.QUIZ = {
+  title: 'Sciences & espace', emoji: '🔭', color: '#5B3FD9', color2: '#22C3A6',
+  sub: 'Planètes, éléments, unités et vivant.',
+  modes: [
+    { id: 'Espace', label: 'Espace', emoji: E },
+    { id: 'Chimie', label: 'Chimie', emoji: C },
+    { id: 'Physique', label: 'Physique & unités', emoji: P },
+    { id: 'Vivant', label: 'Le vivant', emoji: V }
+  ],
+  items
+};
+})();

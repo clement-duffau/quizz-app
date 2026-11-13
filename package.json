@@ -1,0 +1,19 @@
+{
+  "name": "mes-quiz",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mes Quiz – appli Android qui regroupe les quiz de Clément",
+  "scripts": {
+    "sync": "cap sync android",
+    "serve": "npx --yes http-server www -p 8080 -c-1"
+  },
+  "dependencies": {
+    "@capacitor-community/text-to-speech": "^8.0.2",
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/core": "^8.6.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.6.2"
+  }
+}

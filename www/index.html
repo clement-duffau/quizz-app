@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mes Quiz</title>
+<link rel="stylesheet" href="shared/fonts/fonts.css">
+<script src="shared/capacitor.js"></script>
+<style>
+:root{--bg:#F4F1EA;--ink:#1D1B16;--muted:#6B665B;--line:#E2DDD1;--card:#FFFFFF;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141318;--ink:#F2EFE8;--muted:#A49F94;--line:#2E2B35;--card:#1F1D25;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141318;--ink:#F2EFE8;--muted:#A49F94;--line:#2E2B35;--card:#1F1D25;color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.4;-webkit-tap-highlight-color:transparent}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:720px;margin:0 auto;padding:calc(22px + env(safe-area-inset-top,0px)) 16px calc(32px + env(safe-area-inset-bottom,0px))}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:18px}
+.logo{display:flex;gap:6px}
+.logo span{width:42px;height:52px;display:grid;place-items:center;border-radius:11px;color:#fff;font-weight:800;font-size:30px;box-shadow:0 4px 0 rgba(0,0,0,.22);animation:drop .6s cubic-bezier(.3,1.5,.5,1) both}
+.logo span:nth-child(1){background:#2E5BFF}.logo span:nth-child(2){background:#D6332B;animation-delay:.08s}.logo span:nth-child(3){background:#F5B700;color:#1D1B16;animation-delay:.16s}.logo span:nth-child(4){background:#0F8A7E;animation-delay:.24s}
+@keyframes drop{from{transform:translateY(-30px) rotate(-10deg);opacity:0}to{transform:none;opacity:1}}
+.title{font-size:15px;color:var(--muted);text-align:right;line-height:1.3}
+.title b{display:block;color:var(--ink);font-size:22px;font-weight:800;letter-spacing:-.01em}
+.dice{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:2px dashed var(--line);background:transparent;color:var(--ink);font:inherit;font-weight:700;font-size:16px;border-radius:16px;padding:12px;margin-bottom:16px;cursor:pointer}
+.dice:active{transform:scale(.98)}
+.dice .d{display:inline-block;font-size:22px}
+.dice.roll .d{animation:roll .6s ease}
+@keyframes roll{to{transform:rotate(720deg)}}
+h2{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:22px 2px 10px;font-weight:700}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (min-width:600px){.grid{grid-template-columns:1fr 1fr 1fr}}
+.tile{position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:168px;padding:14px;border-radius:22px;background:var(--c);color:#fff;overflow:hidden;box-shadow:0 5px 0 color-mix(in srgb,var(--c) 55%,#000);transition:transform .12s;animation:up .45s ease both}
+.tile:active{transform:translateY(3px);box-shadow:0 2px 0 color-mix(in srgb,var(--c) 55%,#000)}
+@keyframes up{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}
+.tile .em{font-size:40px;line-height:1;filter:drop-shadow(0 2px 0 rgba(0,0,0,.15))}
+.tile .bg{position:absolute;right:-14px;bottom:-22px;font-size:110px;opacity:.16;transform:rotate(-12deg);pointer-events:none}
+.tile b{display:block;font-size:19px;font-weight:800;line-height:1.1;margin-top:10px}
+.tile small{display:block;font-size:13px;opacity:.9;margin-top:3px}
+.tile .st{position:absolute;top:12px;right:12px;font-size:12px;font-weight:700;background:rgba(0,0,0,.2);padding:3px 8px;border-radius:999px;white-space:nowrap}
+.tile.light{color:#1D1B16}.tile.light .st{background:rgba(255,255,255,.45)}
+.new{position:absolute;top:12px;right:12px;font-size:11px;font-weight:800;letter-spacing:.06em;background:#fff;color:#1D1B16;padding:3px 8px;border-radius:999px}
+footer{margin-top:26px;text-align:center;color:var(--muted);font-size:13px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <div class="logo" aria-hidden="true"><span>Q</span><span>U</span><span>I</span><span>Z</span></div>
+    <div class="title"><b>Mes Quiz</b><span id="stat"></span></div>
+  </header>
+  <button class="dice" id="dice"><span class="d">🎲</span>Un quiz au hasard</button>
+  <h2>Mes quiz</h2>
+  <div class="grid" id="mine"></div>
+  <h2>Nouveaux</h2>
+  <div class="grid" id="fresh"></div>
+  <footer id="foot"></footer>
+</main>
+<script>
+(function(){
+'use strict';
+const get = k => { try { return JSON.parse(localStorage.getItem(k)); } catch(e) { return null; } };
+const keys = () => { try { return Object.keys(localStorage); } catch(e) { return []; } };
+const bestOf = prefix => keys().filter(k => k.startsWith(prefix)).reduce((m, k) => Math.max(m, +get(k) || 0), 0);
+const APPS = [
+  { g:'mine', href:'apps/culture/index.html', em:'🧠', t:'Culture G & acronymes', s:'HDMI, LASER, géo, histoire…', c:'#3B2EF0',
+    st:() => { const b = bestOf('quizcult-best-'); return b ? '🏆 ' + b : ''; } },
+  { g:'mine', href:'apps/militaire/index.html', em:'🛡️', t:'Matériel militaire', s:'Fiches chiffrées et quiz', c:'#1F5673',
+    st:() => { const k = (get('mm_known_v1') || []).length; const b = get('mm_best_v1'); return k ? k + ' fiches sues' : b ? '🏆 ' + b + ' %' : ''; } },
+  { g:'mine', href:'apps/russe/index.html', em:'Я', t:'Alphabet russe', s:'Lettres et prononciation', c:'#2456D6',
+    st:() => { const s = get('azbuka_alphabet_v1'); const n = s && s.done ? Object.keys(s.done).length : 0; return n ? n + '/7 leçons' : ''; } },
+  { g:'fresh', href:'apps/quiz/index.html?t=drapeaux', em:'🚩', t:'Drapeaux & capitales', s:'97 pays, 3 modes', c:'#D6332B', t2:'drapeaux' },
+  { g:'fresh', href:'apps/quiz/index.html?t=sciences', em:'🔭', t:'Sciences & espace', s:'Planètes, chimie, unités', c:'#5B3FD9', t2:'sciences' },
+  { g:'fresh', href:'apps/quiz/index.html?t=tech', em:'💡', t:'Marques & tech', s:'Fondateurs et origines', c:'#0F8A7E', t2:'tech' },
+  { g:'fresh', href:'apps/quiz/index.html?t=histoire', em:'⏳', t:'Histoire & dates', s:'De Alésia à l’euro', c:'#B5522A', t2:'histoire' }
+];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let i = 0;
+APPS.forEach(a => {
+  let st = a.st ? a.st() : (b => b ? '🏆 ' + b : '')(bestOf('mq-best-' + a.t2 + '-'));
+  const badge = st ? '<span class="st">' + esc(st) + '</span>' : (a.g === 'fresh' ? '<span class="new">NOUVEAU</span>' : '');
+  document.getElementById(a.g).insertAdjacentHTML('beforeend',
+    '<a class="tile" href="' + a.href + '" style="--c:' + a.c + ';animation-delay:' + (i++ * 50) + 'ms">' + badge +
+    '<span class="bg" aria-hidden="true">' + a.em + '</span><span class="em">' + a.em + '</span><span><b>' + esc(a.t) + '</b><small>' + esc(a.s) + '</small></span></a>');
+});
+const played = get('mq-played') || 0;
+document.getElementById('stat').textContent = APPS.length + ' quiz' + (played ? ' · ' + played + ' parties' : '');
+document.getElementById('foot').textContent = 'Ta progression reste sur ce téléphone.';
+const dice = document.getElementById('dice');
+dice.addEventListener('click', () => {
+  dice.classList.remove('roll'); void dice.offsetWidth; dice.classList.add('roll');
+  const a = APPS[Math.random() * APPS.length | 0];
+  setTimeout(() => location.href = a.href, 450);
+});
+// Bouton retour Android : sur l'accueil, il ferme l'appli
+const cap = window.Capacitor;
+if (cap && cap.isNativePlatform && cap.isNativePlatform() && cap.registerPlugin) {
+  const App = cap.registerPlugin('App');
+  App.addListener('backButton', () => App.exitApp());
+}
+})();
+</script>
+</body>
+</html>

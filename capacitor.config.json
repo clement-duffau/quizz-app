@@ -1,0 +1,7 @@
+{
+  "appId": "fr.clementduffau.mesquiz",
+  "appName": "Mes Quiz",
+  "webDir": "www",
+  "android": { "backgroundColor": "#F4F1EA" },
+  "plugins": { "SystemBars": { "insetsHandling": "css", "initialViewportFitValueHint": "cover" } }
+}
