@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jeux — Mes Quiz</title>
+<meta name="mq-title" content="Jeux">
+<link rel="stylesheet" href="../../shared/fonts/fonts.css">
+<script src="../../shared/capacitor.js"></script>
+<script src="../../shared/shell.js"></script>
+<script src="../../shared/journal.js"></script>
+<script src="../../shared/banque.js"></script>
+<script src="chiffres.js"></script>
+<style>
+:root{--bg:#F4F1EA;--surface:#FFFFFF;--ink:#1D1B16;--muted:#6B665B;--line:#E2DDD1;--acc:#0891B2;--good:#159A5B;--bad:#E0412F;--gold:#F5B700;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141318;--surface:#1F1D25;--ink:#F2EFE8;--muted:#A49F94;--line:#33303B;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#141318;--surface:#1F1D25;--ink:#F2EFE8;--muted:#A49F94;--line:#33303B;color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.4;-webkit-tap-highlight-color:transparent}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.wrap{max-width:640px;margin:0 auto;padding:16px 16px calc(40px + env(safe-area-inset-bottom,0px))}
+.hero{display:flex;align-items:center;gap:14px;margin:4px 0 16px}
+.badge{flex:none;width:68px;height:68px;border-radius:22px;background:var(--acc);display:grid;place-items:center;font-size:36px;box-shadow:0 6px 0 color-mix(in srgb,var(--acc) 60%,#000)}
+.hero h1{margin:0;font-size:1.8rem;line-height:1.05;font-weight:800}
+.hero p{margin:4px 0 0;color:var(--muted)}
+.list{display:grid;gap:12px}
+.item{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;text-align:left;width:100%;background:var(--surface);border:2px solid var(--line);border-bottom-width:5px;border-radius:18px;padding:14px 16px}
+.item:active{transform:translateY(2px);border-bottom-width:3px}
+.item .emo{font-size:1.9rem;width:40px;text-align:center}
+.item strong{display:block;font-size:1.08rem}
+.item span{color:var(--muted);font-size:.9rem}
+.item .best{font-weight:800;color:var(--acc);white-space:nowrap}
+.btn{display:block;width:100%;margin-top:14px;padding:15px;border:0;border-radius:14px;background:var(--acc);color:#fff;font-weight:800;font-size:1.06rem;box-shadow:0 4px 0 color-mix(in srgb,var(--acc) 55%,#000)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 color-mix(in srgb,var(--acc) 55%,#000)}
+.btn.ghost{background:var(--surface);color:var(--ink);border:2px solid var(--line);box-shadow:none}
+.btn:disabled{opacity:.5}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hud{display:flex;justify-content:space-between;align-items:center;font-weight:700;margin-bottom:12px}
+.hud .big{font-size:1.4rem;font-weight:800;font-variant-numeric:tabular-nums}
+.quit{background:none;border:0;color:var(--muted);padding:4px}
+.bar{height:10px;border-radius:5px;background:var(--line);overflow:hidden;margin-bottom:14px}
+.bar i{display:block;height:100%;background:var(--gold);border-radius:5px;transition:width .2s linear}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:18px 16px 20px;text-align:center;position:relative}
+.card.ok{border-color:var(--good);box-shadow:0 0 0 4px color-mix(in srgb,var(--good) 25%,transparent)}
+.card.ko{border-color:var(--bad);box-shadow:0 0 0 4px color-mix(in srgb,var(--bad) 25%,transparent);animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.cat{font-size:.85rem;color:var(--muted);font-weight:600}
+.emo-big{font-size:3.2rem;line-height:1.1;margin:4px 0}
+.qtext{font-size:1.2rem;font-weight:800;margin:6px 0 10px;line-height:1.25}
+.claim{font-size:1.25rem;font-weight:800;color:var(--acc);background:var(--bg);border-radius:14px;padding:10px 12px}
+.qimg{margin:0 0 10px;border-radius:14px;overflow:hidden;border:2px solid var(--line)}
+.qimg img{display:block;width:100%;height:auto;max-height:28vh;object-fit:cover}
+.vf{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.vf button{border:0;border-radius:16px;padding:18px 10px;font-size:1.25rem;font-weight:800;color:#fff;box-shadow:0 5px 0 rgba(0,0,0,.25)}
+.vf button:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.25)}
+.vf .t{background:var(--good)}.vf .f{background:var(--bad)}
+.fix{min-height:22px;margin-top:10px;font-size:.95rem;color:var(--muted)}
+.pm{display:grid;gap:10px}
+.pmcard{background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:14px;text-align:center}
+.pmcard .n{font-size:1.25rem;font-weight:800}
+.pmcard .v{font-size:1.5rem;font-weight:800;color:var(--acc);font-variant-numeric:tabular-nums;margin-top:2px}
+.pmcard .v.hide{color:var(--muted)}
+.pmq{text-align:center;font-weight:700;color:var(--muted)}
+.end{text-align:center}
+.end .e{font-size:4.2rem}
+.end .s{font-size:3.2rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.sub{color:var(--muted)}
+.choices{display:grid;gap:10px;margin-top:12px}
+.choice{display:flex;align-items:center;gap:12px;text-align:left;width:100%;background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:13px 14px;font-size:1.02rem;font-weight:600;min-height:54px}
+.choice.right{background:var(--good);border-color:var(--good);color:#fff}
+.choice.wrong{background:var(--bad);border-color:var(--bad);color:#fff}
+.choice.dim{opacity:.45}
+.pass{text-align:center;padding:30px 10px}
+.pass .who{font-size:2rem;font-weight:800;margin:10px 0}
+.scores{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.scores div{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:8px 12px;text-align:center}
+.scores div.on{border-color:var(--acc)}
+.scores b{display:block;font-size:1.4rem}
+label.f{display:block;font-weight:700;margin:12px 0 6px}
+input.f,select.f{width:100%;background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:11px 12px}
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg button{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:700}
+.seg button[aria-pressed="true"]{border-color:var(--acc);color:var(--acc)}
+.loading{text-align:center;color:var(--muted);padding:40px 0}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="wrap" id="app"><p class="loading">Chargement des questions…</p></main>
+<script>
+(function(){
+'use strict';
+const $ = s => document.querySelector(s);
+const app = $('#app');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const rand = a => a[Math.random() * a.length | 0];
+const store = { get(k){ try { return JSON.parse(localStorage.getItem(k)); } catch(e){ return null; } }, set(k,v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} } };
+const sfx = n => { if (window.MQS) MQS.play(n); };
+const J = new URLSearchParams(location.search).get('j');
+const GAMES = { vf:'vraifaux', pm:'plusmoins', duel:'duel' };
+let BANK = null, timer = null;
+
+function setColor(id){ const a = MQJ.app(id); document.documentElement.style.setProperty('--acc', a.c); const b = $('#mq-bar span'); if (b) b.textContent = a.t; document.title = a.t; return a; }
+function hero(a, sub){ return '<div class="hero"><div class="badge">' + a.em + '</div><div><h1>' + esc(a.t) + '</h1><p>' + sub + '</p></div></div>'; }
+function photo(q){
+  if (!q.i) return '';
+  return '<figure class="qimg"><img src="../quiz/img/' + encodeURIComponent(q.src) + '/' + encodeURIComponent(q.i) + '.jpg" alt="Photo" onerror="this.parentNode.remove()"></figure>';
+}
+function head(q){ return q.i && q.iq ? photo(q) : '<div class="emo-big">' + esc(q.b || q.e || '❓') + '</div>'; }
+const fq = s => esc(s).replace(/ ([?!:;])/g, ' $1');
+async function bank(){ if (!BANK) BANK = (await MQB.loadAll()).flatMap(Q => Q.items.map(it => ({ ...it, quiz:Q.title }))); return BANK; }
+
+/* ===================== Menu ===================== */
+function menu(){
+  const a = { em:'🎮', t:'Jeux' }; document.documentElement.style.setProperty('--acc', '#0891B2');
+  const best = { vraifaux: store.get('mq-vf-best'), plusmoins: store.get('mq-pm-best') };
+  app.innerHTML = hero(a, 'D’autres façons de jouer avec toutes les questions.') + '<div class="list">' +
+    Object.entries(GAMES).map(([k, id]) => { const g = MQJ.app(id); const b = best[id]; return '<a class="item" href="?j=' + k + '"><span class="emo">' + g.em + '</span><span><strong>' + esc(g.t) + '</strong><span>' + esc(g.s) + '</span></span><span class="best">' + (b ? '🏆 ' + b : '') + '</span></a>'; }).join('') + '</div>';
+}
+
+/* ===================== Vrai ou faux ===================== */
+const VF_TIME = 60;
+async function vfIntro(){
+  const a = setColor('vraifaux'), best = store.get('mq-vf-best') || 0;
+  app.innerHTML = hero(a, VF_TIME + ' secondes : vrai ou faux, le plus vite possible. Les questions viennent de tous les quiz.') +
+    '<p class="sub">Une bonne réponse : +1. Une erreur ne retire rien, mais fait perdre du temps.</p>' + (best ? '<p><b>Ton record : ' + best + '</b></p>' : '') +
+    '<button class="btn" id="go">C’est parti !</button>';
+  await bank();
+  $('#go').onclick = vfStart;
+}
+let VF;
+function vfStart(){
+  VF = { ok:0, ko:0, end: performance.now() + VF_TIME * 1000, seen:new Set(), lock:false };
+  app.innerHTML = '<div class="hud"><button class="quit" id="quit">✕ Quitter</button><span>✅ <span class="big" id="ok">0</span></span><span>⏱️ <span class="big" id="t">' + VF_TIME + '</span></span></div><div class="bar"><i id="bar" style="width:100%"></i></div><div id="zone"></div>';
+  $('#quit').onclick = () => { clearInterval(timer); vfIntro(); };
+  clearInterval(timer);
+  timer = setInterval(() => { const left = Math.max(0, VF.end - performance.now()); $('#t').textContent = Math.ceil(left / 1000); $('#bar').style.width = (left / VF_TIME / 10) + '%'; if (left <= 0) vfEnd(); }, 100);
+  vfNext();
+}
+function vfNext(){
+  let q; for (let k = 0; k < 50; k++) { q = rand(BANK); if (!VF.seen.has(q)) break; }
+  VF.seen.add(q);
+  const truth = Math.random() < .5, claim = truth ? q.r : rand(q.w);
+  VF.cur = { q, truth, claim }; VF.lock = false;
+  $('#zone').innerHTML = '<div class="card" id="card"><div class="cat">' + esc(q.quiz) + '</div>' + head(q) + '<div class="qtext">' + fq(q.q) + '</div><div class="claim">' + esc(claim) + '</div><div class="fix" id="fix"></div></div>' +
+    '<div class="vf"><button class="t" data-v="1">Vrai</button><button class="f" data-v="0">Faux</button></div>';
+  document.querySelectorAll('.vf button').forEach(b => b.onclick = () => vfAnswer(b.dataset.v === '1'));
+}
+function vfAnswer(v){
+  if (VF.lock) return; VF.lock = true;
+  const ok = v === VF.cur.truth, card = $('#card');
+  if (ok) { VF.ok++; $('#ok').textContent = VF.ok; card.classList.add('ok'); sfx('ok'); setTimeout(vfNext, 350); }
+  else { VF.ko++; card.classList.add('ko'); sfx('bad'); $('#fix').innerHTML = 'Bonne réponse : <b>' + esc(VF.cur.q.r) + '</b>'; setTimeout(vfNext, 1500); }
+}
+function vfEnd(){
+  clearInterval(timer); sfx('fin');
+  const best = store.get('mq-vf-best') || 0, rec = VF.ok > best; if (rec) store.set('mq-vf-best', VF.ok);
+  MQJ.log({ a:'vraifaux', m:'60 s', g:VF.ok, n:VF.ok + VF.ko, s:VF.ok });
+  app.innerHTML = '<div class="end"><div class="e">' + (rec ? '🏆' : '⚖️') + '</div><div class="s">' + VF.ok + '</div><p class="sub">bonnes réponses en ' + VF_TIME + ' secondes · ' + VF.ko + ' erreur' + (VF.ko > 1 ? 's' : '') + '</p>' +
+    '<p><b>' + (rec ? 'Nouveau record !' : 'Record : ' + best) + '</b></p><div class="row"><button class="btn" id="again">Rejouer</button><a class="btn ghost" href="?" style="text-align:center;text-decoration:none">Autres jeux</a></div></div>';
+  $('#again').onclick = vfStart;
+}
+
+/* ===================== Plus ou moins ===================== */
+const fmt = (c, v) => {
+  if (c.date) return v < 0 ? (-v) + ' av. J.-C.' : String(v);
+  if (c.fmt === 'M') return (v >= 1 ? v.toLocaleString('fr-FR', { maximumFractionDigits:1 }) + ' million' + (v >= 2 ? 's' : '') : Math.round(v * 1000).toLocaleString('fr-FR') + ' mille') + ' d’habitants';
+  return v.toLocaleString('fr-FR', { maximumFractionDigits:3 }) + (c.u ? ' ' + c.u : '');
+};
+const far = (c, a, b) => c.date ? Math.abs(a[1] - b[1]) >= 5 : Math.max(a[1], b[1]) / Math.min(a[1], b[1]) >= 1.15;
+let PM;
+function pmIntro(){
+  const a = setColor('plusmoins'), best = store.get('mq-pm-best') || 0;
+  app.innerHTML = hero(a, 'Plus grand, plus haut, plus ancien… Enchaîne les bonnes réponses : la première erreur arrête la série.') + (best ? '<p><b>Ta meilleure série : ' + best + '</b></p>' : '') +
+    '<div class="list">' + CHIFFRES.map((c, k) => '<button class="item" data-k="' + k + '"><span class="emo">' + c.em + '</span><span><strong>' + esc(c.t) + '</strong><span>' + c.items.length + ' éléments</span></span><span class="best">' + ((store.get('mq-pm-best-' + c.id) || '') && '🏆 ' + store.get('mq-pm-best-' + c.id)) + '</span></button>').join('') +
+    '<button class="item" data-k="*"><span class="emo">🎲</span><span><strong>Tout mélangé</strong><span>Une catégorie différente à chaque fois</span></span><span></span></button></div>';
+  document.querySelectorAll('[data-k]').forEach(b => b.onclick = () => pmStart(b.dataset.k));
+}
+function pmStart(k){
+  PM = { k, n:0 };
+  PM.c = k === '*' ? rand(CHIFFRES) : CHIFFRES[+k];
+  PM.a = rand(PM.c.items);
+  pmNext();
+}
+function pmNext(){
+  if (PM.k === '*') { const c = rand(CHIFFRES); if (c !== PM.c) { PM.c = c; PM.a = rand(c.items); } }
+  const c = PM.c; let cand = c.items.filter(x => x !== PM.a && far(c, x, PM.a));
+  if (!cand.length) { PM.a = rand(c.items); cand = c.items.filter(x => x !== PM.a && far(c, x, PM.a)); }
+  PM.b = rand(cand); PM.lock = false;
+  const up = c.date ? '⏩ Après' : '▲ Plus', down = c.date ? '⏪ Avant' : '▼ Moins';
+  app.innerHTML = '<div class="hud"><button class="quit" id="quit">✕ Quitter</button><span>' + c.em + ' ' + esc(c.t) + '</span><span>🔥 <span class="big">' + PM.n + '</span></span></div>' +
+    '<div class="pm"><div class="pmcard"><div class="n">' + esc(PM.a[0]) + '</div><div class="v">' + esc(fmt(c, PM.a[1])) + '</div></div>' +
+    '<div class="pmq">' + (c.date ? 'Cet événement-ci a-t-il eu lieu avant ou après ?' : esc(PM.b[0]) + ' : plus ou moins ?') + '</div>' +
+    '<div class="pmcard" id="bcard"><div class="n">' + esc(PM.b[0]) + '</div><div class="v hide" id="bv">?</div></div></div>' +
+    '<div class="vf"><button class="t" data-v="1">' + up + '</button><button class="f" data-v="0">' + down + '</button></div><div id="after"></div>';
+  $('#quit').onclick = pmIntro;
+  document.querySelectorAll('.vf button').forEach(b => b.onclick = () => pmAnswer(b.dataset.v === '1'));
+}
+function pmAnswer(up){
+  if (PM.lock) return; PM.lock = true;
+  const c = PM.c, ok = up === (PM.b[1] > PM.a[1]);
+  $('#bv').classList.remove('hide'); $('#bv').textContent = fmt(c, PM.b[1]);
+  $('#bcard').classList.add(ok ? 'ok' : 'ko'); $('#bcard').classList.add('card');
+  if (ok) { PM.n++; sfx('ok'); PM.a = PM.b; setTimeout(pmNext, 1100); return; }
+  sfx('bad');
+  const key = 'mq-pm-best-' + (PM.k === '*' ? 'mix' : c.id), best = store.get(key) || 0, all = store.get('mq-pm-best') || 0;
+  if (PM.n > best) store.set(key, PM.n); if (PM.n > all) store.set('mq-pm-best', PM.n);
+  MQJ.log({ a:'plusmoins', m:PM.k === '*' ? 'Tout mélangé' : c.t, g:PM.n, n:PM.n + 1, s:PM.n });
+  setTimeout(() => { sfx('fin');
+    $('#after').innerHTML = '<div class="end" style="margin-top:14px"><p class="sub">' + esc(PM.b[0]) + ' : ' + esc(fmt(c, PM.b[1])) + '</p><div class="s">' + PM.n + '</div><p class="sub">bonne' + (PM.n > 1 ? 's' : '') + ' réponse' + (PM.n > 1 ? 's' : '') + ' d’affilée</p>' +
+      '<p><b>' + (PM.n > best ? 'Nouveau record !' : 'Record : ' + best) + '</b></p><div class="row"><button class="btn" id="again">Rejouer</button><button class="btn ghost" id="cats">Catégories</button></div></div>';
+    document.querySelector('.vf').remove();
+    $('#again').onclick = () => pmStart(PM.k); $('#cats').onclick = pmIntro;
+  }, 700);
+}
+
+/* ===================== Duel à deux ===================== */
+let DU;
+async function duelIntro(){
+  const a = setColor('duel'), last = store.get('mq-duel-noms') || ['Joueur 1', 'Joueur 2'];
+  const quizzes = (window.MQJ ? MQJ.APPS : []).filter(x => /apps\/quiz\/index\.html\?t=/.test(x.href) && !/t=(defi|revision)/.test(x.href));
+  app.innerHTML = hero(a, 'À deux sur le même téléphone : chacun à son tour, on se passe l’appareil.') +
+    '<label class="f" for="p1">Joueur 1</label><input class="f" id="p1" maxlength="16" value="' + esc(last[0]) + '">' +
+    '<label class="f" for="p2">Joueur 2</label><input class="f" id="p2" maxlength="16" value="' + esc(last[1]) + '">' +
+    '<label class="f" for="qz">Thème</label><select class="f" id="qz"><option value="*">🎲 Tout mélangé</option>' + quizzes.map(x => '<option value="' + x.id + '">' + x.em + ' ' + esc(x.t) + '</option>').join('') + '</select>' +
+    '<label class="f">Questions par joueur</label><div class="seg" id="nb">' + [5, 8, 10].map(n => '<button data-n="' + n + '" aria-pressed="' + (n === 5) + '">' + n + '</button>').join('') + '</div>' +
+    '<button class="btn" id="go">Lancer le duel</button>';
+  let nb = 5;
+  $('#nb').onclick = e => { const b = e.target.closest('[data-n]'); if (!b) return; nb = +b.dataset.n; document.querySelectorAll('#nb button').forEach(x => x.setAttribute('aria-pressed', x === b)); };
+  $('#go').onclick = async () => {
+    const names = [$('#p1').value.trim() || 'Joueur 1', $('#p2').value.trim() || 'Joueur 2']; store.set('mq-duel-noms', names);
+    $('#go').disabled = true; $('#go').textContent = 'Préparation…';
+    duelStart(names, $('#qz').value, nb);
+  };
+}
+async function duelStart(names, qz, nb){
+  const pool = qz === '*' ? await bank() : ((await MQB.load(qz)) || { items:[] }).items.map(it => ({ ...it, quiz:MQJ.app(qz).t }));
+  const qs = shuffle(pool).slice(0, nb * 2).map(q => { const ch = shuffle([q.r, ...shuffle(q.w).slice(0, 3)]); return { ...q, ch, ans:ch.indexOf(q.r) }; });
+  DU = { names, qs, i:0, sc:[0, 0], qz, nb };
+  duelPass();
+}
+const turn = () => DU.i % 2;
+function scoresHTML(){ return '<div class="scores">' + DU.names.map((n, k) => '<div class="' + (k === turn() ? 'on' : '') + '">' + esc(n) + '<b>' + DU.sc[k] + '</b></div>').join('') + '</div>'; }
+function duelPass(){
+  if (DU.i >= DU.qs.length) return duelEnd();
+  app.innerHTML = scoresHTML() + '<div class="pass"><div class="e" style="font-size:3rem">📱</div><p class="sub">Passe le téléphone à</p><div class="who">' + esc(DU.names[turn()]) + '</div><p class="sub">Question ' + (Math.floor(DU.i / 2) + 1) + ' sur ' + DU.qs.length / 2 + '</p><button class="btn" id="go">Je suis prêt·e</button></div>';
+  $('#go').onclick = duelQ;
+}
+function duelQ(){
+  const q = DU.qs[DU.i];
+  app.innerHTML = scoresHTML() + '<div class="card"><div class="cat">' + esc(q.quiz) + '</div>' + head(q) + '<div class="qtext">' + fq(q.q) + '</div><div class="choices">' +
+    q.ch.map((c, k) => '<button class="choice" data-k="' + k + '">' + esc(c) + '</button>').join('') + '</div><div class="fix" id="fix"></div></div><div id="nx"></div>';
+  document.querySelectorAll('.choice').forEach(b => b.onclick = () => duelAnswer(+b.dataset.k));
+}
+function duelAnswer(k){
+  const q = DU.qs[DU.i], ok = k === q.ans;
+  document.querySelectorAll('.choice').forEach((b, j) => { b.disabled = true; b.classList.add(j === q.ans ? 'right' : j === k ? 'wrong' : 'dim'); });
+  if (ok) { DU.sc[turn()]++; sfx('ok'); } else sfx('bad');
+  $('#fix').textContent = q.f || '';
+  document.querySelectorAll('.scores b')[turn()].textContent = DU.sc[turn()];
+  $('#nx').innerHTML = '<button class="btn" id="go">' + (DU.i === DU.qs.length - 1 ? 'Voir le résultat' : 'Joueur suivant') + '</button>';
+  $('#go').onclick = () => { DU.i++; duelPass(); };
+}
+function duelEnd(){
+  sfx('fin');
+  const [a, b] = DU.sc, w = a === b ? -1 : a > b ? 0 : 1;
+  MQJ.log({ a:'duel', m:DU.names.join(' contre '), g:a + b, n:DU.qs.length, s:Math.max(a, b) });
+  app.innerHTML = '<div class="end"><div class="e">' + (w < 0 ? '🤝' : '🏆') + '</div><h2>' + (w < 0 ? 'Égalité !' : esc(DU.names[w]) + ' gagne !') + '</h2>' + scoresHTML().replace(/ class="on"/g, '') +
+    '<div class="row"><button class="btn" id="again">Revanche</button><button class="btn ghost" id="set">Changer</button></div></div>';
+  $('#again').onclick = () => duelStart(DU.names.slice().reverse(), DU.qz, DU.nb);   // la revanche commence par l'autre joueur
+  $('#set').onclick = duelIntro;
+}
+
+if (J === 'vf') vfIntro(); else if (J === 'pm') pmIntro(); else if (J === 'duel') duelIntro(); else menu();
+})();
+</script>
+</body>
+</html>

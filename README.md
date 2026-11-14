@@ -6,7 +6,7 @@ Appli Android qui regroupe mes quiz :
 |---|---|
 | 🧠 Culture G & acronymes | 38 acronymes, 98 questions de culture générale, chrono et combos |
 | 🛡️ Matériel militaire | 69 équipements : fiches chiffrées avec photo, quiz, catalogue |
-| Я Russe | L'alphabet (7 leçons), puis 15 leçons façon Duolingo : 133 mots avec accent tonique et prononciation, 65 phrases à assembler, écoute, paires (voix Android) |
+| Я Russe | L'alphabet (7 leçons), puis 21 leçons façon Duolingo : 194 mots avec accent tonique et prononciation, phrases à assembler, écoute, paires, « écoute et écris » au clavier cyrillique (voix Android) |
 | 🚩 Drapeaux & capitales | 97 pays : drapeaux, capitales, capitale → pays |
 | 🔭 Sciences & espace | Espace, chimie, physique & unités, vivant |
 | 💡 Marques & tech | Fondateurs, dates clés, origine des noms, pays d'origine |
@@ -24,6 +24,11 @@ Appli Android qui regroupe mes quiz :
 | 🎬 Cinéma & BD | Films, dessins animés, bande dessinée |
 
 Et aussi :
+
+- **Aujourd'hui** (en haut de l'accueil) : le **défi du jour** (10 questions de 10 quiz, les mêmes pour tout le monde,
+  score à partager) et la **révision du jour** (tes erreurs de tous les quiz reviennent après 1, 3, 7, 14 puis 30 jours).
+- **Jeux** : Vrai ou faux (60 secondes), Plus ou moins (population, superficie, sommets, fleuves, dates…), Duel à deux.
+- **Sauvegarde** dans le profil : exporter la progression dans un fichier, la réimporter sur un autre téléphone.
 
 - **Mon profil** (carte en haut de l'accueil) : pseudo et avatar, niveau, série de jours 🔥, objectif du jour,
   graphique jour après jour, calendrier, progression par quiz, badges et dernières parties.
@@ -51,7 +56,8 @@ puis télécharger la voix russe si elle n'y est pas.
 ```
 www/                      l'appli web (ce que contient l'APK)
   index.html              écran d'accueil
-  apps/profil/index.html  page profil et progression
+  apps/profil/index.html  page profil, progression et sauvegarde
+  apps/jeux/              Vrai ou faux, Plus ou moins, Duel (+ chiffres.js)
   apps/culture|militaire|russe/index.html   les quiz existants (fichiers uniques)
   apps/militaire/img/     photos des équipements + credits.js
   apps/russe/cours.js     leçons de russe après l'alphabet (mots, phrases, astuces)
@@ -60,6 +66,7 @@ www/                      l'appli web (ce que contient l'APK)
   apps/quiz/img/<quiz>/   photos des quiz illustrés + credits.js
   shared/shell.js         barre « ‹ Mes Quiz », bouton retour Android, voix native
   shared/journal.js       catalogue des quiz + historique des parties (profil)
+  shared/banque.js        banque de questions, révision espacée, défi du jour, partage
   shared/fonts/           polices embarquées (l'appli marche hors ligne)
 android/                  projet Android généré par Capacitor
 .github/workflows/android.yml   construction automatique de l'APK

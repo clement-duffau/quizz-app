@@ -306,5 +306,137 @@ window.RU_COURSE = [
      ['За+втра суббо+та.','Demain, c\'est samedi.','ZAF-tra sou-BO-ta'],
      ['Сего+дня понеде+льник?','Aujourd\'hui, c\'est lundi ?','si-VOD-nia pa-ni-DIÉL’-nik']
     ]}
+ ]},
+ { u:'Les couleurs', c:'#E11D48', lessons:[
+  { id:'couleurs', t:'Toutes les couleurs', em:'🎨', s:'Les couleurs et les adjectifs',
+    tip:"Le russe a deux bleus : си+ний (bleu foncé) et голубо+й (bleu ciel), considérés comme deux couleurs différentes. Au masculin, les adjectifs finissent en -ый, -ий ou -ой.",
+    words:[
+     ['кра+сный','KRAS-nyï','rouge','🔴'],
+     ['си+ний','SI-niï','bleu foncé','🔵'],
+     ['голубо+й','ga-lou-BOÏ','bleu clair','🩵'],
+     ['зелёный','zi-LIO-nyï','vert','🟢'],
+     ['жёлтый','JOL-tyï','jaune','🟡'],
+     ['бе+лый','BIÉ-lyï','blanc','⚪'],
+     ['чёрный','TCHOR-nyï','noir','⚫'],
+     ['се+рый','SIÉ-ryï','gris','🩶'],
+     ['ора+нжевый','a-RAN-ji-vyï','orange','🟠'],
+     ['ро+зовый','RO-za-vyï','rose','🩷'],
+     ['кори+чневый','ka-RITCH-ni-vyï','marron','🟤'],
+     ['цвет','tsviét','couleur','🌈']
+    ],
+    phrases:[
+     ['Мой кот чёрный.','Mon chat est noir.','moï KOT TCHOR-nyï'],
+     ['Э+то кра+сный дом.','C\'est une maison rouge.','É-ta KRAS-nyï DOM'],
+     ['Бана+н жёлтый.','La banane est jaune.','ba-NAN JOL-tyï'],
+     ['Како+й твой люби+мый цвет?','Quelle est ta couleur préférée ?','ka-KOÏ tvoï liou-BI-myï TSVIET']
+    ]}
+ ]},
+ { u:'Les verbes', c:'#2563EB', lessons:[
+  { id:'lire', t:'Je lis, tu lis', em:'📖', s:'Conjuguer au présent',
+    tip:"Au présent, beaucoup de verbes suivent ce modèle : on enlève -ть et on ajoute -ю, -ешь, -ет, -ем, -ете, -ют. Ça marche aussi pour знать (savoir), де+лать (faire), рабо+тать (travailler).",
+    words:[
+     ['чита+ть','tchi-TAT’','lire','📚'],
+     ['я чита+ю','ya tchi-TA-you','je lis','📖'],
+     ['ты чита+ешь','ty tchi-TA-ich','tu lis','👉'],
+     ['он чита+ет','on tchi-TA-it','il lit','👨'],
+     ['мы чита+ем','my tchi-TA-im','nous lisons','👫'],
+     ['вы чита+ете','vy tchi-TA-i-tié','vous lisez','👥'],
+     ['они+ чита+ют','a-NI tchi-TA-yout','ils lisent','👨‍👩‍👧'],
+     ['кни+га','KNI-ga','livre','📕'],
+     ['газе+та','ga-ZIÉ-ta','journal','📰']
+    ],
+    phrases:[
+     ['Я чита+ю кни+гу.','Je lis un livre.','ya tchi-TA-you KNI-gou'],
+     ['Что ты чита+ешь?','Que lis-tu ?','chto ty tchi-TA-ich'],
+     ['Он чита+ет газе+ту.','Il lit le journal.','on tchi-TA-it ga-ZIÉ-tou'],
+     ['Мы чита+ем по-ру+сски.','Nous lisons en russe.','my tchi-TA-im pa-ROUS-ki']
+    ]},
+  { id:'faire', t:'Que fais-tu ?', em:'🛠️', s:'Travailler, faire, savoir, habiter',
+    tip:"Жить (habiter) change de radical : я живу+, ты живёшь, он живёт. Et « je ne sais pas » se dit simplement « я не зна+ю ».",
+    words:[
+     ['рабо+тать','ra-BO-tat’','travailler','💼'],
+     ['я рабо+таю','ya ra-BO-ta-you','je travaille','👷'],
+     ['де+лать','DIÉ-lat’','faire','🔨'],
+     ['что ты де+лаешь','chto ty DIÉ-la-ich','que fais-tu ?','❔'],
+     ['знать','znat’','savoir','🧠'],
+     ['я зна+ю','ya ZNA-you','je sais','💡'],
+     ['жить','jit’','vivre, habiter','🏡'],
+     ['я живу+','ya ji-VOU','j\'habite','🏠'],
+     ['где ты живёшь','gdié ty ji-VIOCH','où habites-tu ?','🗺️']
+    ],
+    phrases:[
+     ['Я не зна+ю.','Je ne sais pas.','ya ni ZNA-you'],
+     ['Я рабо+таю сего+дня.','Je travaille aujourd\'hui.','ya ra-BO-ta-you si-VOD-nia'],
+     ['Он не рабо+тает.','Il ne travaille pas.','on ni ra-BO-ta-it'],
+     ['Что ты де+лаешь сейча+с?','Que fais-tu maintenant ?','chto ty DIÉ-la-ich si-TCHAS']
+    ]}
+ ]},
+ { u:'Où ?', c:'#0D9488', lessons:[
+  { id:'ou', t:'À Paris, à la maison', em:'📍', s:'Dire où l\'on est avec в et на',
+    tip:"Pour dire où l'on est, on met в (dans) ou на (sur) et le nom change de fin, le plus souvent en -е : Москва+ → в Москве+. Le в se prononce « f » devant une consonne sourde : в Пари+же = « f pa-RI-ji ».",
+    words:[
+     ['в','v','dans, à, en','📥'],
+     ['на','na','sur, à','🔝'],
+     ['в Москве+','v mask-VIÉ','à Moscou','🇷🇺'],
+     ['в Пари+же','f pa-RI-ji','à Paris','🗼'],
+     ['до+ма','DO-ma','à la maison','🏠'],
+     ['на рабо+те','na ra-BO-tié','au travail','💼'],
+     ['в шко+ле','f CHKO-lié','à l\'école','🏫'],
+     ['в магази+не','v ma-ga-ZI-nié','au magasin','🛒'],
+     ['в Росси+и','v ra-SI-i','en Russie','❄️'],
+     ['во Фра+нции','va FRAN-tsy-i','en France','🥐']
+    ],
+    phrases:[
+     ['Я живу+ в Пари+же.','J\'habite à Paris.','ya ji-VOU f pa-RI-ji'],
+     ['Он на рабо+те.','Il est au travail.','on na ra-BO-tié'],
+     ['Мы до+ма.','Nous sommes à la maison.','my DO-ma'],
+     ['Ма+ма в магази+не.','Maman est au magasin.','MA-ma v ma-ga-ZI-nié'],
+     ['Я в шко+ле.','Je suis à l\'école.','ya f CHKO-lié']
+    ]}
+ ]},
+ { u:'Les transports', c:'#CA8A04', lessons:[
+  { id:'transports', t:'En route !', em:'🚌', s:'Bus, train, avion et billets',
+    tip:"Le russe distingue aller à pied (идти+ : я иду+) et aller en véhicule (е+хать : я е+ду). Dans по+езд, le « д » final se prononce « t » : « PO-ist ».",
+    words:[
+     ['авто+бус','af-TO-bous','bus','🚌'],
+     ['по+езд','PO-ist','train','🚆'],
+     ['самолёт','sa-ma-LIOT','avion','✈️'],
+     ['маши+на','ma-CHI-na','voiture','🚗'],
+     ['биле+т','bi-LIÉT','billet','🎫'],
+     ['аэропо+рт','a-é-ra-PORT','aéroport','🛫'],
+     ['остано+вка','as-ta-NOF-ka','arrêt','🚏'],
+     ['я е+ду','ya YÉ-dou','je vais (en véhicule)','🛣️'],
+     ['я иду+','ya i-DOU','je vais (à pied)','🚶'],
+     ['пешко+м','pich-KOM','à pied','👣']
+    ],
+    phrases:[
+     ['Где остано+вка авто+буса?','Où est l\'arrêt de bus ?','gdié as-ta-NOF-ka af-TO-bou-sa'],
+     ['Оди+н биле+т, пожа+луйста.','Un billet, s\'il vous plaît.','a-DIN bi-LIÉT, pa-JA-lous-ta'],
+     ['Я е+ду на по+езде.','Je voyage en train.','ya YÉ-dou na PO-iz-dié'],
+     ['Я иду+ пешко+м.','Je vais à pied.','ya i-DOU pich-KOM']
+    ]}
+ ]},
+ { u:'La météo', c:'#0284C7', lessons:[
+  { id:'meteo', t:'Quel temps fait-il ?', em:'⛅', s:'Le temps et les saisons',
+    tip:"Dans со+лнце, le « л » ne se prononce pas : « SON-tsé ». Et pour la météo, pas de sujet : « Хо+лодно » veut dire « Il fait froid ».",
+    words:[
+     ['пого+да','pa-GO-da','le temps (météo)','🌤️'],
+     ['тепло+','tip-LO','il fait bon','🌡️'],
+     ['хо+лодно','KHO-lad-na','il fait froid','🥶'],
+     ['жа+рко','JAR-ka','il fait chaud','🥵'],
+     ['идёт дождь','i-DIOT dochtch','il pleut','🌧️'],
+     ['идёт снег','i-DIOT sniék','il neige','🌨️'],
+     ['со+лнце','SON-tsé','soleil','☀️'],
+     ['зима+','zi-MA','hiver','⛄'],
+     ['весна+','vis-NA','printemps','🌷'],
+     ['ле+то','LIÉ-ta','été','🏖️'],
+     ['о+сень','O-sin’','automne','🍂']
+    ],
+    phrases:[
+     ['Сего+дня хо+лодно.','Aujourd\'hui, il fait froid.','si-VOD-nia KHO-lad-na'],
+     ['Кака+я сего+дня пого+да?','Quel temps fait-il aujourd\'hui ?','ka-KA-ya si-VOD-nia pa-GO-da'],
+     ['Ле+том жа+рко.','En été, il fait chaud.','LIÉ-tam JAR-ka'],
+     ['Зимо+й идёт снег.','En hiver, il neige.','zi-MOÏ i-DIOT sniék']
+    ]}
  ]}
 ];

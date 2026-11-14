@@ -123,6 +123,11 @@ h2{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute
 .empty{text-align:center;padding:26px 12px}
 .empty .e{font-size:54px}
 .btn{display:inline-block;margin-top:12px;padding:12px 18px;border-radius:14px;background:var(--acc);color:#fff;font-weight:800;text-decoration:none;border:0;box-shadow:0 4px 0 color-mix(in srgb,var(--acc) 55%,#000)}
+.bk p{margin:0 0 10px;font-size:14px}
+.bk .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bk button{border:2px solid var(--line);background:var(--bg);border-radius:14px;padding:12px 8px;font-weight:700;font-size:15px}
+.bk button:active{transform:translateY(2px)}
+.bk .msg2{margin-top:10px;font-size:13.5px;min-height:18px}
 .danger{background:none;border:0;color:var(--muted);text-decoration:underline;font-size:14px;padding:8px;display:block;margin:6px auto 0}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -212,6 +217,7 @@ function render(){
 
   if (!J.tot.p) {
     h += `<section class="card empty"><div class="e">📈</div><p><b>Ton historique est vide pour l’instant.</b><br><span class="muted">Chaque partie terminée s’ajoute ici : tu verras ta progression jour après jour.</span></p><a class="btn" href="../../index.html">Choisir un quiz</a></section>`;
+    h += backupCard();
     $('#app').innerHTML = h; wire(); return;
   }
   // Chiffres
@@ -247,6 +253,7 @@ function render(){
   const last = J.games.slice(-15).reverse();
   h += `<section class="card"><h2>Dernières parties</h2><ul class="hist">${last.map(g => { const a = MQJ.app(g.a), d = new Date(g.t);
       return `<li><span class="he">${a.em}</span><span><b>${esc(a.t)}</b>${g.m && g.m !== '*' ? ' · <span class="muted">' + esc(modeName(g.m)) + '</span>' : ''}<br><span class="muted">${fmtDay(d)} à ${d.getHours()} h ${String(d.getMinutes()).padStart(2, '0')}</span></span><span class="hs">${g.g}/${g.n}</span></li>`; }).join('')}</ul></section>`;
+  h += backupCard();
   h += `<button class="danger" id="reset">Effacer mon historique</button>`;
   $('#app').innerHTML = h;
   drawChart(); drawCal(); wire();
@@ -299,7 +306,64 @@ function drawCal(){
   $('#cal').innerHTML = h;
   $('#calspan').textContent = 'Depuis le ' + start.getDate() + ' ' + MOIS[start.getMonth()];
 }
+/* ---------- Sauvegarde de la progression ---------- */
+const BK_RE = /^(mq[-_]|quizcult-|mm_|azbuka_|ru_course)/;
+function backupCard(){
+  const last = (() => { try { return JSON.parse(localStorage.getItem('mq-backup')); } catch (e) { return null; } })();
+  return `<section class="card bk"><h2>Sauvegarde</h2>
+    <p class="muted">Garde une copie de toute ta progression (quiz, russe, militaire, profil, révisions) pour la retrouver sur un autre téléphone ou après une réinstallation.${last ? '<br>Dernière sauvegarde : ' + fmtDay(dOf(last)) + '.' : ''}</p>
+    <div class="row"><button id="bkOut">📤 Exporter</button><button id="bkIn">📥 Importer</button></div>
+    <input type="file" id="bkFile" accept=".json,application/json" hidden>
+    <div class="msg2" id="bkMsg" aria-live="polite"></div></section>`;
+}
+function backupData(){
+  const data = {};
+  try { Object.keys(localStorage).filter(k => BK_RE.test(k)).forEach(k => { data[k] = localStorage.getItem(k); }); } catch (e) {}
+  return { app:'mesquiz', v:1, date:new Date().toISOString(), data };
+}
+async function exportBackup(){
+  const msg = $('#bkMsg');
+  try { localStorage.setItem('mq-backup', JSON.stringify(MQJ.dayKey())); } catch (e) {}
+  const json = JSON.stringify(backupData()), name = 'mesquiz-sauvegarde-' + MQJ.dayKey() + '.json';
+  const cap = window.Capacitor;
+  if (cap && cap.isNativePlatform && cap.isNativePlatform()) {
+    try {
+      const FS = cap.registerPlugin('Filesystem'), SH = cap.registerPlugin('Share');
+      const w = await FS.writeFile({ path:name, data:json, directory:'CACHE', encoding:'utf8' });
+      await SH.share({ title:'Sauvegarde Mes Quiz', text:'Ma progression Mes Quiz', files:[w.uri], dialogTitle:'Enregistrer la sauvegarde' });
+      msg.textContent = '✅ Choisis où la ranger (Drive, Fichiers, e-mail…).';
+    } catch (e) {
+      if (!/cancel/i.test(String(e && e.message))) { msg.textContent = 'Le partage a échoué : ' + (e && e.message || e); }
+    }
+    return;
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([json], { type:'application/json' })); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  msg.textContent = '✅ Fichier « ' + name + ' » téléchargé.';
+}
+function importBackup(file){
+  const msg = $('#bkMsg');
+  const r = new FileReader();
+  r.onload = () => {
+    let b;
+    try { b = JSON.parse(r.result); } catch (e) { msg.textContent = '❌ Ce fichier n’est pas une sauvegarde Mes Quiz.'; return; }
+    if (!b || b.app !== 'mesquiz' || !b.data) { msg.textContent = '❌ Ce fichier n’est pas une sauvegarde Mes Quiz.'; return; }
+    const keys = Object.keys(b.data).filter(k => BK_RE.test(k));
+    const when = b.date ? new Date(b.date).toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' }) : '?';
+    if (!confirm('Remplacer ta progression actuelle par la sauvegarde du ' + when + ' ?')) return;
+    try {
+      Object.keys(localStorage).filter(k => BK_RE.test(k)).forEach(k => localStorage.removeItem(k));
+      keys.forEach(k => localStorage.setItem(k, b.data[k]));
+    } catch (e) { msg.textContent = '❌ Impossible d’écrire la sauvegarde.'; return; }
+    location.reload();
+  };
+  r.readAsText(file);
+}
 function wire(){
+  $('#bkOut').addEventListener('click', exportBackup);
+  $('#bkIn').addEventListener('click', () => $('#bkFile').click());
+  $('#bkFile').addEventListener('change', e => { if (e.target.files[0]) importBackup(e.target.files[0]); });
   $('#ava').addEventListener('click', () => $('#picker').classList.toggle('on'));
   $('#picker').addEventListener('click', e => { const b = e.target.closest('[data-av]'); if (!b) return; P.avatar = b.dataset.av; MQJ.saveProfile(P); render(); });
   $('#name').addEventListener('change', e => { P.name = e.target.value.trim(); MQJ.saveProfile(P); });

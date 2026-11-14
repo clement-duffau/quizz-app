@@ -14,7 +14,13 @@ et publié dans les Releases. Il n'y a pas de SDK Android à installer en local.
 - Chaque fin de partie appelle `MQJ.log({ a: <id du quiz>, m: <mode>, g: <bonnes réponses>, n: <questions>, s: <score> })`.
 - La progression est en `localStorage` ; ne jamais renommer une clé existante
   (`quizcult-best-*`, `mm_known_v1`, `mm_best_v1`, `azbuka_alphabet_v1`, `mq-best-*`, `mq-played`, `mq-chrono`,
-  `mq-journal-v1`, `mq-profile-v1`, `mq-miss-*`, `ru_course_v1`, `mq-sfx`).
+  `mq-journal-v1`, `mq-profile-v1`, `mq-miss-*`, `ru_course_v1`, `mq-sfx`, `mq-srs-v1`, `mq-defi-v1`,
+  `mq-vf-best`, `mq-pm-best*`, `mq-duel-noms`, `mq-backup`). La sauvegarde du profil exporte toutes les clés
+  `mq-*`, `mq_*`, `quizcult-*`, `mm_*`, `azbuka_*`, `ru_course*` : garder ces préfixes pour toute nouvelle clé.
+- `shared/banque.js` (MQB) charge les quiz du moteur commun depuis n'importe quelle page et gère la révision
+  espacée (erreurs → 1, 3, 7, 14, 30 jours), le défi du jour (tirage déterministe selon la date) et le partage.
+  Quiz virtuels du moteur : `apps/quiz/index.html?t=revision` et `?t=defi`. Jeux : `apps/jeux/index.html?j=vf|pm|duel`
+  (données de « Plus ou moins » dans `apps/jeux/chiffres.js` : paires comparées seulement si écart ≥ 15 %).
 - Nouveaux quiz : un fichier `www/apps/quiz/data/<nom>.js` + une entrée dans `APPS` de `www/shared/journal.js`
   (catalogue commun à l'accueil et au profil ; l'`id` doit être égal à `<nom>`).
   Vérifier qu'aucune mauvaise réponse n'est égale à la bonne, et qu'il n'y a pas de doublon.

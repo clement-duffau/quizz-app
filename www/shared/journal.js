@@ -11,6 +11,11 @@
   // Catalogue des quiz : sert à l'accueil et au profil.
   // g = rubrique de l'accueil, href relatif à www/
   var APPS = [
+    { id: 'defi',      g: 'today', href: 'apps/quiz/index.html?t=defi',     em: '🗓️', t: 'Défi du jour', s: '10 questions, les mêmes pour tous', c: '#DC2626' },
+    { id: 'revision',  g: 'today', href: 'apps/quiz/index.html?t=revision', em: '🔁', t: 'Révision du jour', s: 'Tes erreurs, au bon moment', c: '#7C3AED' },
+    { id: 'vraifaux',  g: 'jeux',  href: 'apps/jeux/index.html?j=vf',       em: '⚖️', t: 'Vrai ou faux', s: '60 secondes chrono', c: '#0891B2' },
+    { id: 'plusmoins', g: 'jeux',  href: 'apps/jeux/index.html?j=pm',       em: '📈', t: 'Plus ou moins', s: 'Le plus grand, le plus ancien…', c: '#65A30D' },
+    { id: 'duel',      g: 'jeux',  href: 'apps/jeux/index.html?j=duel',     em: '🤝', t: 'Duel à deux', s: 'Sur le même téléphone', c: '#DB2777' },
     { id: 'culture',   g: 'mine',  href: 'apps/culture/index.html',   em: '🧠', t: 'Culture G & acronymes', s: 'HDMI, LASER, géo, histoire…', c: '#3B2EF0' },
     { id: 'militaire', g: 'mine',  href: 'apps/militaire/index.html', em: '🛡️', t: 'Matériel militaire', s: 'Fiches, photos et quiz', c: '#1F5673' },
     { id: 'russe',     g: 'mine',  href: 'apps/russe/index.html',     em: 'Я', t: 'Russe', s: 'Alphabet, mots et phrases', c: '#2456D6' },

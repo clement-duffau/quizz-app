@@ -8,6 +8,7 @@
 <script src="../../shared/capacitor.js"></script>
 <script src="../../shared/shell.js"></script>
 <script src="../../shared/journal.js"></script>
+<script src="../../shared/banque.js"></script>
 <style>
 :root{--bg:#F4F1EA;--surface:#FFFFFF;--ink:#1D1B16;--muted:#6B665B;--line:#E2DDD1;--acc:#2E5BFF;--acc2:#FFB020;--good:#159A5B;--bad:#E0412F;color-scheme:light}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141318;--surface:#1F1D25;--ink:#F2EFE8;--muted:#A49F94;--line:#33303B;color-scheme:dark}}
@@ -35,6 +36,8 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--acc2);outline-o
 .mode .emo{font-size:1.9rem;width:40px;text-align:center}
 .mode strong{display:block;font-size:1.12rem}
 .mode span{color:var(--muted);font-size:.9rem}
+.share{display:block;width:100%;margin-top:12px}
+.dnote{background:var(--surface);border:2px dashed var(--line);border-radius:14px;padding:10px 14px;margin:0 0 14px;font-size:.95rem}
 .mode.rev{border-color:var(--acc2);background:color-mix(in srgb,var(--acc2) 12%,var(--surface))}
 .mode .best{font-weight:800;color:var(--acc);font-size:.92rem;white-space:nowrap}
 .opts{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 0}
@@ -181,8 +184,11 @@ const KEYS = ["A","B","C","D"], DURATION = 15000, NB = 10;
 let Q, S = null, timerId = null;
 let chrono = store.get('mq-chrono') !== false;
 
+// Quiz virtuels : « revision » (erreurs dues, tous quiz) et « defi » (10 questions du jour, mêmes pour tous)
+const V = T === 'revision' || T === 'defi';
+if (V) (T === 'revision' ? buildRevision() : buildDefi()).then(q => { Q = q; init(); });
 const s = document.createElement('script');
-s.src = 'data/' + encodeURIComponent(T) + '.js';
+if (!V) s.src = 'data/' + encodeURIComponent(T) + '.js';
 s.onload = () => {
   Q = window.QUIZ;
   if (!Q.items.some(x => x.i)) return init();
@@ -192,7 +198,33 @@ s.onload = () => {
   document.head.appendChild(c);
 };
 s.onerror = () => { document.querySelector('main').innerHTML = '<p>Quiz introuvable.</p>'; };
-document.head.appendChild(s);
+if (!V) document.head.appendChild(s);
+
+const appName = id => { const a = window.MQJ ? MQJ.app(id) : { em: '', t: id }; return a.em + ' ' + a.t; };
+async function buildRevision(){
+  const keys = MQB.srs.due(), byQuiz = {};
+  keys.forEach(k => { const i = k.indexOf('§'); (byQuiz[k.slice(0, i)] = byQuiz[k.slice(0, i)] || {})[k.slice(i + 1)] = k; });
+  const qs = await MQB.loadAll(Object.keys(byQuiz)), items = [];
+  qs.forEach(QQ => QQ.items.forEach(it => { const key = (byQuiz[it.src] || {})[MQB.qid(it)]; if (key) items.push({ ...it, k:'Révision', kk:appName(it.src), key }); }));
+  const total = MQB.srs.total();
+  return { title:'Révision du jour', emoji:'🔁', color:'#7C3AED', color2:'#F59E0B', virtual:true, nb:15,
+    sub: items.length ? 'Tes erreurs reviennent au bon moment : le lendemain, puis 3, 7, 14 et 30 jours après.' : 'Rien à réviser aujourd’hui 🎉',
+    note: items.length ? null : (total ? total + ' question' + (total > 1 ? 's' : '') + ' en attente pour les prochains jours. Reviens demain !' : 'Chaque question ratée dans un quiz arrivera ici le lendemain.'),
+    modes: items.length ? [{ id:'Révision', label:'Réviser maintenant', emoji:'🔁', desc:Math.min(15, items.length) + ' aujourd’hui' }] : [], items };
+}
+async function buildDefi(){
+  const all = (await MQB.loadAll(MQB.ids().slice().sort())).sort((a, b) => a.items[0].src < b.items[0].src ? -1 : 1);
+  const r = MQB.defi.rng(), sh = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = r() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const items = sh(all).slice(0, 10).map(QQ => {
+    const it = QQ.items[r() * QQ.items.length | 0], choices = sh([it.r, ...sh(it.w).slice(0, 3)]);
+    return { ...it, k:'Défi', kk:appName(it.src), choices, ans:choices.indexOf(it.r) };
+  });
+  const d = new Date(), done = MQB.defi.get();
+  return { title:'Défi du jour', emoji:'🗓️', color:'#DC2626', color2:'#F59E0B', virtual:true, fixed:true, nb:10, chrono:true,
+    sub:'10 questions de 10 quiz différents, les mêmes pour tout le monde aujourd’hui.',
+    note: done ? 'Déjà relevé aujourd’hui : <b>' + done.g + '/' + done.n + '</b> · ' + done.s + ' points. Tu peux rejouer, mais hors concours.' : 'Chrono obligatoire. Seul ton premier essai compte.',
+    modes:[{ id:'Défi', label: done ? 'Rejouer (hors concours)' : 'Relever le défi', emoji:'🗓️', desc:d.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' }) }], items };
+}
 
 function init(){
   document.title = Q.title;
@@ -203,42 +235,50 @@ function init(){
   const cats = [...new Set(Q.items.map(x => x.k))];
   const modes = (Q.modes || cats.map(c => ({ id:c, label:c, emoji:(Q.items.find(x => x.k === c) || {}).e || '❓' })))
     .map(m => ({ ...m, n: Q.items.filter(x => x.k === m.id).length }));
-  modes.push({ id:'*', label:'Tout mélangé', emoji:'🎲', n:Q.items.length });
+  if (!Q.virtual) modes.push({ id:'*', label:'Tout mélangé', emoji:'🎲', n:Q.items.length });
   const nm = missPool().length;
+  const oldNote = document.querySelector('.dnote'); if (oldNote) oldNote.remove();
+  if (Q.note) $('#modes').insertAdjacentHTML('beforebegin', '<p class="dnote">' + Q.note + '</p>');
+  if (Q.chrono) $('#tChrono').style.display = 'none';
+  if (Q.virtual) $('#tSheets').style.display = 'none';
   if (nm) modes.unshift({ id:'!', label:'À revoir', emoji:'🔁', desc:'tes erreurs passées', n:nm, rev:true });
-  $('#modes').innerHTML = modes.map(m => '<button class="mode' + (m.rev ? ' rev' : '') + '" data-mode="' + esc(m.id) + '"><span class="emo">' + m.emoji + '</span><div><strong>' + esc(m.label) + '</strong><span>' + (m.desc ? esc(m.desc) + ' · ' : '') + m.n + ' questions</span></div><span class="best" data-best="' + esc(m.id) + '"></span></button>').join('');
+  $('#modes').innerHTML = modes.map(m => '<button class="mode' + (m.rev ? ' rev' : '') + '" data-mode="' + esc(m.id) + '"><span class="emo">' + m.emoji + '</span><div><strong>' + esc(m.label) + '</strong><span>' + (m.desc ? esc(m.desc) + (Q.virtual ? '' : ' · ') : '') + (Q.virtual ? '' : m.n + ' questions') + '</span></div><span class="best" data-best="' + esc(m.id) + '"></span></button>').join('');
   document.querySelectorAll('.mode').forEach(b => b.addEventListener('click', () => start(b.dataset.mode)));
   refreshBest(); setChrono(chrono);
 }
 // Mémoire des erreurs : une question ratée revient dans « À revoir » jusqu'à ce qu'elle soit réussie
 const missKey = 'mq-miss-' + T, qid = q => (q.i || q.b || '') + '|' + q.q;
+const keyOf = q => 'mq-miss-' + (q.src || T);
 // Photo d'une question : img/<quiz>/<i>.jpg, avec auteur et licence sous l'image
-const credit = q => ((window.QIMG || {})[T] || {})[q.i + '.jpg'];
+const credit = q => ((window.QIMG || {})[q.src || T] || {})[q.i + '.jpg'];
 const creditText = c => c ? 'Photo : ' + esc(c.a || 'auteur inconnu') + (c.l ? ' · ' + esc(c.l) : '') + ' · Wikimedia Commons' : '';
 // Dans la question, pas de légende : l'auteur d'une photo de tableau est souvent… le peintre, donc la réponse.
 function photo(q, noCaption){
   if (!q.i) return '';
   const c = noCaption ? null : credit(q);
-  return '<figure class="qimg"><img src="img/' + encodeURIComponent(T) + '/' + encodeURIComponent(q.i) + '.jpg" alt="Photo" onerror="this.parentNode.remove()">' +
+  return '<figure class="qimg"><img src="img/' + encodeURIComponent(q.src || T) + '/' + encodeURIComponent(q.i) + '.jpg" alt="Photo" onerror="this.parentNode.remove()">' +
     (c ? '<figcaption>' + creditText(c) + '</figcaption>' : '') + '</figure>';
 }
 function misses(){ return store.get(missKey) || []; }
-function missPool(){ const m = new Set(misses()); return Q.items.filter(x => m.has(qid(x))); }
+function missPool(){ if (Q.virtual) return []; const m = new Set(misses()); return Q.items.filter(x => m.has(qid(x))); }
 function remember(q, ok){
-  const m = misses(), id = qid(q), i = m.indexOf(id);
+  if (window.MQB) { if (T === 'revision') MQB.srs.review(q.key, ok); else if (!ok) MQB.srs.miss(q.src || T, q); }
+  const k = keyOf(q), m = store.get(k) || [], id = qid(q), i = m.indexOf(id);
   if (ok && i >= 0) m.splice(i, 1); else if (!ok && i < 0) m.push(id); else return;
-  store.set(missKey, m.slice(-300));
+  store.set(k, m.slice(-300));
 }
-function setChrono(v){ chrono = v; store.set('mq-chrono', v); const t = $('#tChrono'); t.setAttribute('aria-pressed', v); t.textContent = v ? '⏱️ Chrono 15 s' : '🐢 Sans chrono'; }
+function setChrono(v){ chrono = v; if (!Q || !Q.chrono) store.set('mq-chrono', v); const t = $('#tChrono'); t.setAttribute('aria-pressed', v); t.textContent = v ? '⏱️ Chrono 15 s' : '🐢 Sans chrono'; }
 const bestKey = m => 'mq-best-' + T + '-' + m;
 function refreshBest(){ document.querySelectorAll('[data-best]').forEach(el => { const b = store.get(bestKey(el.dataset.best)); el.textContent = b ? '🏆 ' + b : ''; }); }
 function show(id){ document.querySelectorAll('.screen').forEach(x => x.classList.toggle('on', x.id === id)); scrollTo(0, 0); }
 
 function build(mode){
+  if (Q.fixed) return Q.items.map(q => ({ ...q }));
   const pool = mode === '*' ? Q.items : mode === '!' ? missPool() : Q.items.filter(x => x.k === mode);
-  return shuffle(pool).slice(0, NB).map(q => { const choices = shuffle([q.r, ...shuffle(q.w).slice(0, 3)]); return { ...q, choices, ans: choices.indexOf(q.r) }; });
+  return shuffle(pool).slice(0, Q.nb || NB).map(q => { const choices = shuffle([q.r, ...shuffle(q.w).slice(0, 3)]); return { ...q, choices, ans: choices.indexOf(q.r) }; });
 }
 function start(mode){
+  if (Q.chrono) chrono = true;
   S = { mode, qs: build(mode), i: 0, score: 0, streak: 0, bestStreak: 0, good: 0, results: [], misses: [], locked: false };
   $('#dots').innerHTML = S.qs.map(() => '<i></i>').join('');
   $('#score').textContent = '0'; updateStreak(); show('game'); renderQ();
@@ -249,7 +289,7 @@ function renderQ(){
   const q = S.qs[S.i], n = S.qs.length; S.locked = false;
   document.querySelectorAll('#dots i').forEach((d, k) => d.className = S.results[k] === true ? 'ok' : S.results[k] === false ? 'ko' : k === S.i ? 'now' : '');
   const big = q.i && q.iq ? photo(q, true) : q.b ? '<span class="big' + (q.bt ? ' txt' : '') + '">' + esc(q.b) + '</span>' : '<span class="big" style="font-size:3rem">' + (q.e || Q.emoji) + '</span>';
-  $('#qhead').innerHTML = big + '<div class="cat">' + esc(q.k) + ' · ' + (S.i + 1) + '/' + n + '</div><div class="q">' + esc(q.q).replace(/ ([?!:;])/g, '\u00a0$1') + '</div>';
+  $('#qhead').innerHTML = big + '<div class="cat">' + esc(q.kk || q.k) + ' · ' + (S.i + 1) + '/' + n + '</div><div class="q">' + esc(q.q).replace(/ ([?!:;])/g, '\u00a0$1') + '</div>';
   $('#choices').innerHTML = q.choices.map((c, k) => '<button class="choice" data-k="' + k + '" style="animation-delay:' + (k * 60 + 150) + 'ms"><span class="k">' + KEYS[k] + '</span><span>' + esc(c) + '</span></button>').join('');
   $('#feedback').classList.remove('on'); $('#next').hidden = true; $('#card').classList.remove('shake');
   startTimer();
@@ -296,13 +336,25 @@ function finish(){
   const el = $('#endScore'), target = S.score, t0 = performance.now(), dur = reduced ? 0 : 1100;
   (function count(t){ const p = dur ? Math.min(1, (t - t0) / dur) : 1; el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(count); })(t0);
   const key = bestKey(S.mode), best = store.get(key) || 0, left = missPool().length;
-  if (S.mode === '!') $('#recordWrap').innerHTML = '<p class="sub">' + (left ? 'Encore ' + left + ' question' + (left > 1 ? 's' : '') + ' à revoir.' : 'Plus rien à revoir 🎉') + '</p>';
+  if (T === 'revision') { const d = MQB.srs.due().length; $('#recordWrap').innerHTML = '<p class="sub">' + (d ? 'Encore ' + d + ' question' + (d > 1 ? 's' : '') + ' à réviser aujourd’hui.' : 'Révision du jour terminée 🎉 Les questions réussies reviendront plus tard.') + '</p>'; }
+  else if (T === 'defi') endDefi();
+  else if (S.mode === '!') $('#recordWrap').innerHTML = '<p class="sub">' + (left ? 'Encore ' + left + ' question' + (left > 1 ? 's' : '') + ' à revoir.' : 'Plus rien à revoir 🎉') + '</p>';
   else if (S.score > best) { store.set(key, S.score); $('#recordWrap').innerHTML = best ? '<span class="record">Nouveau record !</span>' : ''; setTimeout(() => confetti(150), 300); }
   else $('#recordWrap').innerHTML = '<p class="sub">Record : ' + best + '</p>';
   const played = store.get('mq-played') || 0; store.set('mq-played', played + 1);
   if (window.MQJ) MQJ.log({ a: T, m: S.mode, g: S.good, n: S.qs.length, s: S.score });
   $('#review').innerHTML = S.misses.length ? '<h2>À retenir</h2><ul>' + S.misses.map(q => '<li><strong>' + (q.b && !q.bt ? esc(q.b) + ' ' : '') + esc(q.q) + ' ' + esc(q.r) + '</strong>' + (q.f ? '<br>' + esc(q.f) : '') + '</li>').join('') + '</ul>' : '';
   refreshBest();
+}
+function endDefi(){
+  const marks = S.results.map(x => x ? '✅' : '❌').join('');
+  const first = MQB.defi.save({ s:S.score, g:S.good, n:S.qs.length, m:marks });
+  const off = MQB.defi.get(), streak = MQB.defi.streak();
+  const date = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long' });
+  const text = '🗓️ Défi Mes Quiz du ' + date + '\n' + off.m + '\n' + off.g + '/' + off.n + ' · ' + off.s + ' points' + (streak > 1 ? '\n🔥 ' + streak + ' défis d’affilée' : '');
+  $('#recordWrap').innerHTML = '<p class="sub">' + (first ? 'Score officiel du jour enregistré.' : 'Hors concours : ton score officiel du jour reste ' + off.g + '/' + off.n + ' · ' + off.s + ' points.') + (streak > 1 ? ' 🔥 ' + streak + ' défis d’affilée.' : '') + '</p>' +
+    '<button class="btn share" id="share">📤 Partager mon score</button>';
+  $('#share').addEventListener('click', () => MQB.share(text, 'Défi Mes Quiz').then(r => { if (r === 'copied') $('#share').textContent = '✅ Copié : colle-le dans un message'; }));
 }
 function renderSheets(){
   const term = $('#sSearch').value.trim().toLowerCase();
@@ -323,8 +375,8 @@ function tick(){ cx.clearRect(0, 0, cv.width, cv.height);
 
 $('#choices').addEventListener('click', e => { const b = e.target.closest('.choice'); if (b) answer(+b.dataset.k); });
 $('#next').addEventListener('click', next);
-$('#again').addEventListener('click', () => { if (S.mode === '!' && !missPool().length) { init(); show('home'); } else start(S.mode); });
-$('#menu').addEventListener('click', () => { init(); show('home'); });
+$('#again').addEventListener('click', () => { if (T === 'revision') return location.reload(); if (S.mode === '!' && !missPool().length) { init(); show('home'); } else start(S.mode); });
+$('#menu').addEventListener('click', () => { if (V) return location.reload(); init(); show('home'); });
 $('#quit').addEventListener('click', () => { clearInterval(timerId); init(); show('home'); });
 $('#tChrono').addEventListener('click', () => setChrono(!chrono));
 $('#tSheets').addEventListener('click', () => { $('#sSearch').value = ''; renderSheets(); show('sheets'); });

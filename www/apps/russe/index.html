@@ -230,6 +230,17 @@ h1,h2,h3,p{margin:0}
 .tok.ghost{color:transparent;background:var(--line);border-color:var(--line);cursor:default}
 .tok:disabled{cursor:default}
 .mt.w{font-size:17px;font-weight:600;padding:6px 8px}
+/* Écoute et écris : clavier cyrillique */
+.typed{min-height:60px;border:2px solid var(--line);border-radius:16px;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:700;letter-spacing:.04em;margin:4px 0 12px;padding:6px 10px;word-break:break-all}
+.typed.empty{color:var(--muted);font-size:16px;font-weight:500;letter-spacing:0}
+.typed.ok{border-color:var(--ok);background:var(--ok-s)}.typed.bad{border-color:var(--bad);background:var(--bad-s)}
+.kb{display:grid;gap:6px;user-select:none}
+.kb .r{display:flex;gap:4px;justify-content:center}
+.kb button{flex:1;max-width:42px;min-width:0;height:46px;border:0;border-radius:9px;background:var(--card);box-shadow:0 2px 0 var(--line-d);font-size:19px;font-weight:600;padding:0;cursor:pointer;color:var(--ink)}
+.kb button:active{transform:translateY(2px);box-shadow:none}
+.kb button.w{max-width:none;flex:2.2;font-size:15px}
+.kb button:disabled{opacity:.5}
+.hintw{font-size:14px;color:var(--muted);text-align:center;margin:-4px 0 10px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:380px){.big-letter{font-size:88px}.bigtxt{font-size:60px}}
 </style>
@@ -495,6 +506,12 @@ function qBuild(ph, dir, pool){
     prompt: dir === 'ru' ? 'Traduis en russe.' : 'Traduis en français.',
     answer: dir === 'ru' ? acc(ph.ru) : ph.fr, info:`${acc(ph.ru)} — « ${ph.ph} »`, after:ph.ru};
 }
+const normW = s => plain(s).replace(/\u0301/g, '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
+const writable = w => !/\s/.test(w.ru) && plain(w.ru).length <= 8;
+function qWrite(w){
+  return {type:'write', w, prompt: hasTTS ? 'Écoute, puis écris le mot en russe.' : `Écris en russe : « ${w.fr} »`, autoplay: hasTTS ? w.ru : null,
+    answer:acc(w.ru), info:winfo(w), after:w.ru};
+}
 function buildCourse(k){
   const L = CL[k], pool = cWordsUpTo(k), ppool = cPhrasesUpTo(k);
   const steps = [], qs = [];
@@ -508,6 +525,7 @@ function buildCourse(k){
   const tail = [];
   if (ws.length >= 4) tail.push(qWMatch(shuffle(ws)));
   if (hasTTS) shuffle(ws).slice(0, 2).forEach(w => tail.push(qLW(w, pool)));
+  shuffle(ws.filter(writable)).slice(0, 2).forEach(w => tail.push(qWrite(w)));
   L.phrases.forEach((ph, i) => { if (tokens(ph.ru).length >= 2) tail.push(qBuild(ph, i % 2 ? 'ru' : 'fr', ppool)); });
   shuffle(ws).slice(0, 2).forEach(w => tail.push(qFR(w, pool)));
   return {steps:steps.concat(tail), total:qs.length + tail.length};
@@ -519,6 +537,7 @@ function buildVocab(){
   const makers = [() => qRF(rand(ws), ws), () => qFR(rand(ws), ws)];
   if (hasTTS) makers.push(() => qLW(rand(ws), ws));
   if (ps.length) makers.push(() => qBuild(rand(ps), Math.random() < .5 ? 'ru' : 'fr', ps));
+  if (ws.some(writable)) makers.push(() => qWrite(rand(ws.filter(writable))));
   const qs = [], seen = new Set();
   for (let t = 0; qs.length < 12 && t < 300; t++) { const q = rand(makers)(); const key = q.type + q.prompt + q.answer; if (seen.has(key)) continue; seen.add(key); qs.push(q); }
   return {steps:qs, total:qs.length};
@@ -583,12 +602,14 @@ function enterStep(){
   if (st.type === 'intro') speak(st.L.ex[0], 0.85);
   if (st.type === 'wintro') speak(st.w.ru, 0.85);
   if (st.type === 'build') { S.b = {pick:[]}; if (st.dir === 'fr') speak(st.ph.ru, 0.85); }
+  if (st.type === 'write') { S.t = ''; if (st.autoplay) speak(st.autoplay, 0.85); }
   if (st.type === 'mc' && st.autoplay) speak(st.autoplay, 0.85);
 }
 function pick(k){ if (S.checked) return; S.sel = k; render(); }
 function check(){
   const q = S.steps[S.pos];
   if (q.type === 'build') return checkBuild(q);
+  if (q.type === 'write') return checkWrite(q);
   if (S.sel == null || S.checked) return;
   const ok = !!q.options[S.sel].ok;
   S.checked = true; S.ok = ok;
@@ -609,6 +630,20 @@ function checkBuild(q){
   else if (!q.retry) S.steps.push({...q, retry:true, bank:shuffle(q.bank)});
   sfx(ok ? 'ok' : 'bad');
   later(() => speak(q.after, 0.85));
+  render();
+}
+function checkWrite(q){
+  if (S.checked || !S.t.trim()) return;
+  const ok = normW(S.t) === normW(q.w.ru);
+  S.checked = true; S.ok = ok;
+  if (ok) { if (!q.retry) S.firstTry++; } else if (!q.retry) S.steps.push({...q, retry:true});
+  sfx(ok ? 'ok' : 'bad'); later(() => speak(q.after, 0.85));
+  render();
+}
+function typeKey(k){
+  if (!S || S.checked) return;
+  const st = S.steps[S.pos]; if (!st || st.type !== 'write') return;
+  if (k === '⌫') S.t = S.t.slice(0, -1); else if (S.t.length < 24) S.t += k;
   render();
 }
 function tokTap(i){ if (S.checked || S.b.pick.includes(i)) return; S.b.pick.push(i); render(); }
@@ -766,6 +801,16 @@ function buildHTML(q){
   const bank = q.bank.map((t, i) => pick.includes(i) ? `<button class="tok ghost" disabled>${esc(t)}</button>` : `<button class="tok" data-act="tok" data-i="${i}" ${S.checked?'disabled':''}>${esc(t)}</button>`).join('');
   return `<h2 class="prompt">${esc(q.prompt)}</h2>${head}<div class="ans">${ans}</div><div class="bank">${bank}</div>`;
 }
+const KB = ['йцукенгшщзх', 'фывапролджэ', 'ячсмитьбюъё'];
+function writeHTML(q){
+  const t = S.t, cls = S.checked ? (S.ok ? ' ok' : ' bad') : (t ? '' : ' empty');
+  const stage = q.autoplay ? `<div class="stage" style="margin-bottom:10px">${spkBtn(q.w.ru,'',0.85,'Écouter le mot')}<button class="pill" data-act="say" data-say="${esc(q.w.ru)}" data-rate="0.5">🐢 Plus lentement</button></div>` : '';
+  const hint = q.autoplay ? `<p class="hintw">Indice : « ${esc(q.w.fr)} »</p>` : '';
+  const dis = S.checked ? 'disabled' : '';
+  const rows = KB.map(r => `<div class="r">${[...r].map(c => `<button data-act="key" data-k="${c}" ${dis}>${c}</button>`).join('')}</div>`).join('');
+  return `<h2 class="prompt">${esc(q.prompt)}</h2>${stage}${hint}<div class="typed${cls}">${t ? esc(t) : 'Touche les lettres ci-dessous'}</div>
+    <div class="kb">${rows}<div class="r"><button class="w" data-act="key" data-k=" " ${dis}>espace</button><button class="w" data-act="key" data-k="⌫" ${dis} aria-label="Effacer">⌫</button></div></div>`;
+}
 function matchHTML(st){
   const m = S.m;
   const cls = (side,k) => {
@@ -800,6 +845,11 @@ function renderSession(){
   if (st.type === 'intro' || st.type === 'wintro' || st.type === 'tip') {
     main = st.type === 'intro' ? letterCard(st.L) : st.type === 'wintro' ? wordCard(st.w) : tipCard(st.L);
     foot = '<button class="btn wide" data-act="next">Continuer</button>';
+  } else if (st.type === 'write') {
+    main = writeHTML(st);
+    if (S.checked) foot = S.ok ? fbHTML(true, rand(['Bravo !','Exact !','Parfait !','Très bien !']), '', st.info, st.after)
+                               : fbHTML(false, 'Pas tout à fait', 'Bonne orthographe : <b style="display:inline">' + esc(st.answer) + '</b>', st.info, st.after);
+    else foot = `<button class="btn wide" data-act="check" ${S.t.trim()?'':'disabled'}>Vérifier</button>`;
   } else if (st.type === 'build') {
     main = buildHTML(st);
     if (S.checked) foot = S.ok ? fbHTML(true, rand(['Bravo !','Exact !','Parfait !','Très bien !']), '', st.info, st.after)
@@ -886,6 +936,7 @@ document.addEventListener('click', e => {
     case 'nextlesson': if (S.kind === 'course') startSession('course', S.idx + 1); else if (S.idx < LESSONS.length - 1) startSession('lesson', S.idx + 1); else startSession('course', 0); break;
     case 'clesson': startSession('course', +t.dataset.k); break;
     case 'tok': tokTap(+t.dataset.i); break;
+    case 'key': typeKey(t.dataset.k); break;
     case 'untok': untokTap(+t.dataset.j); break;
     case 'reset':
       if (!resetArmed) { resetArmed = true; render(); }
@@ -899,7 +950,9 @@ document.addEventListener('keydown', e => {
   const st = S.steps[S.pos];
   if (e.key === 'Enter') {
     if (st.type === 'intro' || st.type === 'wintro' || st.type === 'tip' || S.checked) { e.preventDefault(); next(); }
-    else if ((st.type === 'mc' && S.sel != null) || (st.type === 'build' && S.b.pick.length)) { e.preventDefault(); check(); }
+    else if ((st.type === 'mc' && S.sel != null) || (st.type === 'build' && S.b.pick.length) || (st.type === 'write' && S.t.trim())) { e.preventDefault(); check(); }
+  } else if (st.type === 'write' && !S.checked && (e.key === 'Backspace' || /^[а-яё ]$/i.test(e.key))) {
+    e.preventDefault(); typeKey(e.key === 'Backspace' ? '⌫' : e.key.toLowerCase());
   } else if (st.type === 'mc' && !S.checked && /^[1-4]$/.test(e.key) && st.options[+e.key - 1]) {
     S.sel = +e.key - 1; render();
   }
