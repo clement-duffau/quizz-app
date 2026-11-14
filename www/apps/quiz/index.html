@@ -110,7 +110,8 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--acc2);outline-o
 .sheet .sk{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 /* Photos (Wikimedia Commons) */
 .qimg{margin:4px 0 10px;border-radius:14px;overflow:hidden;background:var(--bg);border:2px solid var(--line)}
-.qimg img{display:block;width:100%;height:auto;max-height:42vh;object-fit:cover}
+.qimg img{display:block;width:100%;height:auto;max-height:32vh;object-fit:cover}
+.pcredit{font-size:11px;color:var(--muted);margin:8px 0 0;overflow-wrap:anywhere}
 .qimg figcaption{font-size:11px;line-height:1.3;color:var(--muted);padding:4px 8px;overflow-wrap:anywhere}
 .feedback .qimg{margin:10px 0 0}
 .sheet .sthumb{float:right;width:72px;height:54px;object-fit:cover;border-radius:8px;margin:0 0 6px 10px}
@@ -213,11 +214,13 @@ function init(){
 const missKey = 'mq-miss-' + T, qid = q => (q.i || q.b || '') + '|' + q.q;
 // Photo d'une question : img/<quiz>/<i>.jpg, avec auteur et licence sous l'image
 const credit = q => ((window.QIMG || {})[T] || {})[q.i + '.jpg'];
-function photo(q){
+const creditText = c => c ? 'Photo : ' + esc(c.a || 'auteur inconnu') + (c.l ? ' · ' + esc(c.l) : '') + ' · Wikimedia Commons' : '';
+// Dans la question, pas de légende : l'auteur d'une photo de tableau est souvent… le peintre, donc la réponse.
+function photo(q, noCaption){
   if (!q.i) return '';
-  const c = credit(q);
+  const c = noCaption ? null : credit(q);
   return '<figure class="qimg"><img src="img/' + encodeURIComponent(T) + '/' + encodeURIComponent(q.i) + '.jpg" alt="Photo" onerror="this.parentNode.remove()">' +
-    (c ? '<figcaption>Photo : ' + esc(c.a || 'auteur inconnu') + (c.l ? ' · ' + esc(c.l) : '') + ' · Wikimedia Commons</figcaption>' : '') + '</figure>';
+    (c ? '<figcaption>' + creditText(c) + '</figcaption>' : '') + '</figure>';
 }
 function misses(){ return store.get(missKey) || []; }
 function missPool(){ const m = new Set(misses()); return Q.items.filter(x => m.has(qid(x))); }
@@ -245,7 +248,7 @@ const mult = () => S.streak >= 5 ? 3 : S.streak >= 3 ? 2 : S.streak >= 2 ? 1.5 :
 function renderQ(){
   const q = S.qs[S.i], n = S.qs.length; S.locked = false;
   document.querySelectorAll('#dots i').forEach((d, k) => d.className = S.results[k] === true ? 'ok' : S.results[k] === false ? 'ko' : k === S.i ? 'now' : '');
-  const big = q.i && q.iq ? photo(q) : q.b ? '<span class="big' + (q.bt ? ' txt' : '') + '">' + esc(q.b) + '</span>' : '<span class="big" style="font-size:3rem">' + (q.e || Q.emoji) + '</span>';
+  const big = q.i && q.iq ? photo(q, true) : q.b ? '<span class="big' + (q.bt ? ' txt' : '') + '">' + esc(q.b) + '</span>' : '<span class="big" style="font-size:3rem">' + (q.e || Q.emoji) + '</span>';
   $('#qhead').innerHTML = big + '<div class="cat">' + esc(q.k) + ' · ' + (S.i + 1) + '/' + n + '</div><div class="q">' + esc(q.q).replace(/ ([?!:;])/g, '\u00a0$1') + '</div>';
   $('#choices').innerHTML = q.choices.map((c, k) => '<button class="choice" data-k="' + k + '" style="animation-delay:' + (k * 60 + 150) + 'ms"><span class="k">' + KEYS[k] + '</span><span>' + esc(c) + '</span></button>').join('');
   $('#feedback').classList.remove('on'); $('#next').hidden = true; $('#card').classList.remove('shake');
@@ -278,6 +281,7 @@ function answer(k){
   S.results[S.i] = ok; document.querySelectorAll('#dots i')[S.i].className = ok ? 'ok' : 'ko';
   $('#verdict').textContent = verdict; $('#verdict').style.color = ok ? 'var(--good)' : 'var(--bad)';
   $('#reveal').innerHTML = 'Réponse : <b>' + esc(q.r) + '</b>' + (q.i && !q.iq ? photo(q) : ''); $('#fact').textContent = q.f || '';
+  if (q.i && q.iq && credit(q)) $('#fact').insertAdjacentHTML('beforeend', '<span class="pcredit" style="display:block">' + creditText(credit(q)) + '</span>');
   $('#feedback').classList.add('on');
   const nx = $('#next'); nx.textContent = S.i === S.qs.length - 1 ? 'Voir mon score' : 'Question suivante'; nx.hidden = false;
   nx.focus({ preventScroll: true }); nx.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' });
