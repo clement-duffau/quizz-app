@@ -1,6 +1,6 @@
 /* Arts & musique */
 (function(){
-const P = '🎨', C = '🎻', R = '🎸';
+const P = '🎨', C = '🎻', R = '🎸', I = '🖼️';
 const items = [
  // Peinture et sculpture
  {k:'Peinture',e:P,q:"Qui a peint la série des Nymphéas ?",r:"Claude Monet",w:["Auguste Renoir","Édouard Manet","Edgar Degas"],f:"Il les a peints dans son jardin de Giverny ; les plus grands sont au musée de l'Orangerie."},
@@ -51,7 +51,28 @@ const items = [
  {k:'Pop & rock',e:R,q:"Quel jour a lieu la Fête de la musique ?",r:"Le 21 juin",w:["Le 14 juillet","Le 1er mai","Le 21 mars"],f:"Créée en France en 1982, le jour du solstice d'été."},
  {k:'Pop & rock',e:R,q:"Quel groupe a pour chanteur Mick Jagger ?",r:"The Rolling Stones",w:["The Who","The Kinks","The Doors"],f:"Leur logo, une bouche tirant la langue, date de 1971."},
  {k:'Pop & rock',e:R,q:"Qui a composé et chanté « Imagine » en 1971 ?",r:"John Lennon",w:["Paul McCartney","Bob Dylan","David Bowie"],f:"Un an après la séparation des Beatles."},
- {k:'Pop & rock',e:R,q:"De quel instrument Jimi Hendrix était-il un virtuose ?",r:"La guitare électrique",w:["La batterie","La basse","L'orgue Hammond"],f:"Il lui arrivait de jouer avec les dents, ou la guitare derrière le dos."}
+ {k:'Pop & rock',e:R,q:"De quel instrument Jimi Hendrix était-il un virtuose ?",r:"La guitare électrique",w:["La batterie","La basse","L'orgue Hammond"],f:"Il lui arrivait de jouer avec les dents, ou la guitare derrière le dos."},
+ // Tableaux en images (photos Wikimedia Commons, œuvres du domaine public)
+ {k:'Tableaux',e:I,i:'la-ronde-de-nuit',iq:1,q:"Qui a peint ce tableau ?",r:"Rembrandt",w:["Johannes Vermeer","Frans Hals","Pierre Paul Rubens"],f:"« La Ronde de nuit » (1642), au Rijksmuseum d'Amsterdam : une compagnie de la milice bourgeoise."},
+ {k:'Tableaux',e:I,i:'le-jardin-des-delices',iq:1,q:"Qui a peint ce tableau ?",r:"Jérôme Bosch",w:["Pieter Bruegel l'Ancien","Albrecht Dürer","Hans Memling"],f:"« Le Jardin des délices », un triptyque peuplé de créatures étranges, au musée du Prado."},
+ {k:'Tableaux',e:I,i:'les-menines',iq:1,q:"Qui a peint ce tableau ?",r:"Diego Velázquez",w:["Francisco de Goya","Le Greco","Bartolomé Murillo"],f:"« Les Ménines » (1656) : le peintre s'est représenté lui-même, à gauche, devant sa toile."},
+ {k:'Tableaux',e:I,i:'la-grande-vague-de-kanagawa',iq:1,q:"Qui a créé cette estampe japonaise ?",r:"Hokusai",w:["Hiroshige","Utamaro","Kuniyoshi"],f:"« La Grande Vague de Kanagawa », vers 1831 : le mont Fuji apparaît tout petit au fond."},
+ {k:'Tableaux',e:I,i:'les-epoux-arnolfini',iq:1,q:"Qui a peint ce tableau ?",r:"Jan van Eyck",w:["Rogier van der Weyden","Hans Holbein","Hans Memling"],f:"« Les Époux Arnolfini » (1434) : le miroir convexe du fond reflète toute la pièce."},
+ {k:'Tableaux',e:I,i:'les-tournesols',iq:1,q:"Qui a peint ce tableau ?",r:"Vincent van Gogh",w:["Paul Gauguin","Paul Cézanne","Claude Monet"],f:"Une série peinte à Arles en 1888 pour décorer la chambre de son ami Gauguin."},
+ {k:'Tableaux',e:I,i:'bal-du-moulin-de-la-galette',iq:1,q:"Qui a peint ce tableau ?",r:"Auguste Renoir",w:["Édouard Manet","Claude Monet","Edgar Degas"],f:"« Bal du moulin de la Galette » (1876), un dimanche à Montmartre ; au musée d'Orsay."},
+ {k:'Tableaux',e:I,i:'un-dimanche-apres-midi-a-l-ile-de-la-grande-jatte',iq:1,q:"Qui a peint ce tableau ?",r:"Georges Seurat",w:["Paul Signac","Camille Pissarro","Henri Matisse"],f:"« Un dimanche après-midi à l'île de la Grande Jatte » (1884-1886), entièrement fait de petits points de couleur."},
+ {k:'Tableaux',e:I,i:'le-dejeuner-sur-l-herbe',iq:1,q:"Qui a peint ce tableau ?",r:"Édouard Manet",w:["Gustave Courbet","Auguste Renoir","Paul Cézanne"],f:"« Le Déjeuner sur l'herbe » (1863) a fait scandale au Salon des refusés."},
+ {k:'Tableaux',e:I,i:'la-tour-de-babel',iq:1,q:"Qui a peint ce tableau ?",r:"Pieter Bruegel l'Ancien",w:["Jérôme Bosch","Albrecht Dürer","Jan van Eyck"],f:"« La Tour de Babel » (1563), au Kunsthistorisches Museum de Vienne."},
+ {k:'Tableaux',e:I,i:'tres-de-mayo',iq:1,q:"Qui a peint ce tableau ?",r:"Francisco de Goya",w:["Diego Velázquez","Eugène Delacroix","Édouard Manet"],f:"« Tres de mayo » (1814) montre l'exécution de Madrilènes par les troupes de Napoléon en 1808."},
+ {k:'Tableaux',e:I,i:'l-ecole-d-athenes',iq:1,q:"Qui a peint cette fresque ?",r:"Raphaël",w:["Michel-Ange","Léonard de Vinci","Sandro Botticelli"],f:"« L'École d'Athènes », au Vatican : Platon et Aristote marchent au centre."},
+ {k:'Tableaux',e:I,i:'la-charrette-de-foin',iq:1,q:"Qui a peint ce tableau ?",r:"John Constable",w:["William Turner","Thomas Gainsborough","John Everett Millais"],f:"« La Charrette de foin » (1821), un paysage de la campagne anglaise, à la National Gallery de Londres."},
+ {k:'Tableaux',e:I,i:'le-voyageur-contemplant-une-mer-de-nuages',iq:1,q:"Qui a peint ce tableau ?",r:"Caspar David Friedrich",w:["William Turner","Arnold Böcklin","Ivan Aïvazovski"],f:"« Le Voyageur contemplant une mer de nuages », vers 1818 : une icône du romantisme allemand."},
+ {k:'Tableaux',e:I,i:'american-gothic',iq:1,q:"Comment s'appelle ce tableau de Grant Wood ?",r:"American Gothic",w:["Nighthawks","Christina's World","Les Fermiers de l'Iowa"],f:"Peint en 1930 ; le nom vient de la fenêtre de style néogothique de la maison au fond."},
+ {k:'Tableaux',e:I,i:'les-joueurs-de-cartes',iq:1,q:"Qui a peint ce tableau ?",r:"Paul Cézanne",w:["Vincent van Gogh","Paul Gauguin","Henri de Toulouse-Lautrec"],f:"« Les Joueurs de cartes » : une série de cinq toiles ; l'une a été vendue plus de 250 millions de dollars."},
+ {k:'Tableaux',e:I,i:'des-glaneuses',iq:1,q:"Qui a peint ce tableau ?",r:"Jean-François Millet",w:["Gustave Courbet","Jules Breton","Camille Corot"],f:"« Des glaneuses » (1857) : des paysannes ramassent les épis oubliés après la moisson ; au musée d'Orsay."},
+ {k:'Tableaux',e:I,i:'le-sacre-de-napoleon',iq:1,q:"Qui a peint ce tableau immense ?",r:"Jacques-Louis David",w:["Jean-Auguste-Dominique Ingres","Antoine-Jean Gros","Eugène Delacroix"],f:"Près de 10 m de large, au Louvre : Napoléon y couronne Joséphine en 1804."},
+ {k:'Tableaux',e:I,i:'composition-viii',iq:1,q:"Qui a peint ce tableau abstrait ?",r:"Vassily Kandinsky",w:["Piet Mondrian","Paul Klee","Kasimir Malevitch"],f:"« Composition VIII » (1923) ; Kandinsky est l'un des pionniers de la peinture abstraite."},
+ {k:'Tableaux',e:I,i:'composition-en-rouge-bleu-et-jaune',iq:1,q:"Qui a peint ce tableau aux lignes noires et aux couleurs primaires ?",r:"Piet Mondrian",w:["Vassily Kandinsky","Kasimir Malevitch","Theo van Doesburg"],f:"Une « Composition en rouge, bleu et jaune » (1930), typique du mouvement De Stijl."}
 ];
 window.QUIZ = {
   title: 'Arts & musique', emoji: '🎨', color: '#BE185D', color2: '#FBBF24',
@@ -59,7 +80,8 @@ window.QUIZ = {
   modes: [
     { id: 'Peinture', label: 'Peinture et sculpture', emoji: P },
     { id: 'Classique', label: 'Musique classique', emoji: C },
-    { id: 'Pop & rock', label: 'Chanson, pop et rock', emoji: R }
+    { id: 'Pop & rock', label: 'Chanson, pop et rock', emoji: R },
+    { id: 'Tableaux', label: 'Tableaux en images', emoji: I }
   ],
   items
 };

@@ -17,8 +17,11 @@ Appli Android qui regroupe mes quiz :
 | 🗣️ Langue française | Expressions, pièges d'orthographe, mots et origines |
 | ✈️ Aviation & espace | Pionniers, avions et radio, conquête spatiale |
 | 🏛️ Mythologies | Dieux grecs et romains, héros et créatures, Vikings, Égypte et ailleurs |
-| 🎨 Arts & musique | Peinture et sculpture, musique classique, chanson, pop et rock |
+| 🎨 Arts & musique | Peinture et sculpture, 20 tableaux en images, musique classique, chanson, pop et rock |
 | 🍽️ Gastronomie | Spécialités françaises, cuisines du monde, produits et techniques |
+| 🏛️ Monuments du monde | 36 monuments à reconnaître en photo |
+| 🐶 Chiens & chats | 35 races à reconnaître en photo |
+| 🎬 Cinéma & BD | Films, dessins animés, bande dessinée |
 
 Et aussi :
 
@@ -54,6 +57,7 @@ www/                      l'appli web (ce que contient l'APK)
   apps/russe/cours.js     leçons de russe après l'alphabet (mots, phrases, astuces)
   apps/quiz/index.html    moteur commun des nouveaux quiz (?t=drapeaux…)
   apps/quiz/data/*.js     les questions de chaque nouveau quiz
+  apps/quiz/img/<quiz>/   photos des quiz illustrés + credits.js
   shared/shell.js         barre « ‹ Mes Quiz », bouton retour Android, voix native
   shared/journal.js       catalogue des quiz + historique des parties (profil)
   shared/fonts/           polices embarquées (l'appli marche hors ligne)

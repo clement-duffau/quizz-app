@@ -23,9 +23,12 @@
     { id: 'sport',     g: 'more',  href: 'apps/quiz/index.html?t=sport',    em: '⚽', t: 'Sport', s: 'Règles, records, légendes', c: '#0E7490' },
     { id: 'langue',    g: 'more',  href: 'apps/quiz/index.html?t=langue',   em: '🗣️', t: 'Langue française', s: 'Expressions et pièges', c: '#9D174D' },
     { id: 'aviation',  g: 'more',  href: 'apps/quiz/index.html?t=aviation', em: '✈️', t: 'Aviation & espace', s: 'Pionniers, avions, fusées', c: '#334155' },
-    { id: 'mythologie', g: 'fresh', href: 'apps/quiz/index.html?t=mythologie', em: '🏛️', t: 'Mythologies', s: 'Grecs, Vikings, Égypte', c: '#6D28D9' },
-    { id: 'arts',      g: 'fresh', href: 'apps/quiz/index.html?t=arts',     em: '🎨', t: 'Arts & musique', s: 'Peintres, compositeurs, chansons', c: '#BE185D' },
-    { id: 'cuisine',   g: 'fresh', href: 'apps/quiz/index.html?t=cuisine',  em: '🍽️', t: 'Gastronomie', s: 'Spécialités et cuisines du monde', c: '#B45309' }
+    { id: 'mythologie', g: 'more',  href: 'apps/quiz/index.html?t=mythologie', em: '⚡', t: 'Mythologies', s: 'Grecs, Vikings, Égypte', c: '#6D28D9' },
+    { id: 'arts',      g: 'more',  href: 'apps/quiz/index.html?t=arts',     em: '🎨', t: 'Arts & musique', s: 'Tableaux en images, musique', c: '#BE185D' },
+    { id: 'cuisine',   g: 'more',  href: 'apps/quiz/index.html?t=cuisine',  em: '🍽️', t: 'Gastronomie', s: 'Spécialités et cuisines du monde', c: '#B45309' },
+    { id: 'monuments', g: 'fresh', href: 'apps/quiz/index.html?t=monuments', em: '🏛️', t: 'Monuments du monde', s: 'Reconnais-les en photo', c: '#0F766E' },
+    { id: 'animaux',   g: 'fresh', href: 'apps/quiz/index.html?t=animaux',  em: '🐶', t: 'Chiens & chats', s: 'Les races en photo', c: '#9A3412' },
+    { id: 'cinema',    g: 'fresh', href: 'apps/quiz/index.html?t=cinema',   em: '🎬', t: 'Cinéma & BD', s: 'Films, dessins animés, BD', c: '#1E3A8A' }
   ];
 
   function read(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }

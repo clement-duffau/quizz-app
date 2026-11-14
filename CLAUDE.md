@@ -23,6 +23,10 @@ et publié dans les Releases. Il n'y a pas de SDK Android à installer en local.
 - Pas de question en double avec les autres quiz (Culture G et Sciences couvrent déjà beaucoup de records et de dates).
 - Photos du quiz militaire : `www/apps/militaire/img/<slug>.jpg` (≤ 720 px, JPEG ~75 %), décrites dans `img/credits.js`
   (auteur, licence, page Commons). Garder les crédits à jour : ils s'affichent sous chaque photo et dans le catalogue.
+- Photos dans les quiz du moteur commun : champ `i` (nom du fichier sans `.jpg`, dans `www/apps/quiz/img/<quiz>/`)
+  et `iq: 1` pour montrer la photo dans la question (sinon elle apparaît dans la correction). Crédits dans
+  `img/<quiz>/credits.js` (`window.QIMG[<quiz>]`), affichés sous la photo et dans « Voir toutes les réponses ».
+  Uniquement des images libres de Wikimedia Commons, vérifiées à l'œil avant de committer.
 - Cours de russe : les unités après l'alphabet sont dans `www/apps/russe/cours.js`. Un « + » suit la voyelle
   accentuée (`приве+т`) ; la prononciation `ph` met la syllabe accentuée en MAJUSCULES et suit la réduction
   des voyelles (о non accentué → « a », е → « i »). Pas de doublon de mot ni de traduction entre leçons.

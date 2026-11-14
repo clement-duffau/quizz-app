@@ -2,3 +2,4 @@ node_modules/
 .DS_Store
 *.apk
 www/apps/militaire/img/credits.json
+www/apps/quiz/img/*/credits.json
