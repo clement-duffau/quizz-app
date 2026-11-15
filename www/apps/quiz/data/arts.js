@@ -4,7 +4,7 @@ const P = '🎨', C = '🎻', R = '🎸', I = '🖼️';
 const items = [
  // Peinture et sculpture
  {k:'Peinture',e:P,q:"Qui a peint la série des Nymphéas ?",r:"Claude Monet",w:["Auguste Renoir","Édouard Manet","Edgar Degas"],f:"Il les a peints dans son jardin de Giverny ; les plus grands sont au musée de l'Orangerie."},
- {k:'Peinture',e:P,q:"Quel mouvement doit son nom au tableau « Impression, soleil levant » ?",r:"L'impressionnisme",w:["Le cubisme","Le fauvisme","Le pointillisme"],f:"Un critique s'en était moqué en 1874 ; le nom est resté."},
+ {k:'Peinture',e:P,q:"Dans quelle ville Monet a-t-il peint une série de plus de trente façades de cathédrale ?",r:"Rouen",w:["Chartres","Reims","Amiens"],f:"Il a peint la même façade à toutes les heures du jour, pour saisir les changements de lumière."},
  {k:'Peinture',e:P,q:"Qui a peint « La Jeune Fille à la perle » ?",r:"Johannes Vermeer",w:["Rembrandt","Jan van Eyck","Pierre Paul Rubens"],f:"Un peintre hollandais du XVIIe siècle dont on connaît à peine 35 tableaux."},
  {k:'Peinture',e:P,q:"Qui a peint « Le Cri » ?",r:"Edvard Munch",w:["Gustav Klimt","Vassily Kandinsky","Egon Schiele"],f:"Un peintre norvégien ; il en a réalisé plusieurs versions."},
  {k:'Peinture',e:P,q:"Qui a peint les célèbres montres molles de « La Persistance de la mémoire » ?",r:"Salvador Dalí",w:["René Magritte","Joan Miró","Max Ernst"],f:"Une figure du surréalisme, célèbre aussi pour sa moustache."},

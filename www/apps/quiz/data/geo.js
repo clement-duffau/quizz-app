@@ -39,7 +39,7 @@ const items = [
  // Records
  {k:'Records',e:R,q:"Quel est le deuxième plus grand pays du monde ?",r:"Le Canada",w:["La Chine","Les États-Unis","Le Brésil"],f:"Derrière la Russie, avec près de 10 millions de km²."},
  {k:'Records',e:R,q:"Quel petit État est, comme le Vatican, entièrement entouré par l'Italie ?",r:"Saint-Marin",w:["Monaco","Andorre","Le Liechtenstein"],f:"Elle se présente comme la plus ancienne république du monde encore existante."},
- {k:'Records',e:R,q:"Quel est le pays le plus peuplé du monde ?",r:"L'Inde",w:["La Chine","Les États-Unis","L'Indonésie"],f:"Elle a dépassé la Chine en 2023, selon les estimations de l'ONU."},
+ {k:'Records',e:R,q:"Quel est le pays le plus peuplé d'Afrique ?",r:"Le Nigeria",w:["L'Éthiopie","L'Égypte","La RD Congo"],f:"Plus de 230 millions d'habitants ; Lagos est l'une des plus grandes villes du continent."},
  {k:'Records',e:R,q:"Quel est le plus grand pays d'Afrique ?",r:"L'Algérie",w:["La RD Congo","Le Soudan","La Libye"],f:"Depuis la partition du Soudan en 2011."},
  {k:'Records',e:R,q:"Quel est le plus grand pays d'Amérique du Sud ?",r:"Le Brésil",w:["L'Argentine","Le Pérou","La Colombie"],f:"Il occupe près de la moitié du continent."},
  {k:'Records',e:R,q:"Quel pays compte le plus de fuseaux horaires, territoires d'outre-mer compris ?",r:"La France",w:["La Russie","Les États-Unis","Le Royaume-Uni"],f:"12 fuseaux grâce à ses outre-mer (13 en comptant la terre Adélie) ; la Russie en a 11."},

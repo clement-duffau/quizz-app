@@ -31,9 +31,13 @@
     { id: 'mythologie', g: 'more',  href: 'apps/quiz/index.html?t=mythologie', em: '⚡', t: 'Mythologies', s: 'Grecs, Vikings, Égypte', c: '#6D28D9' },
     { id: 'arts',      g: 'more',  href: 'apps/quiz/index.html?t=arts',     em: '🎨', t: 'Arts & musique', s: 'Tableaux en images, musique', c: '#BE185D' },
     { id: 'cuisine',   g: 'more',  href: 'apps/quiz/index.html?t=cuisine',  em: '🍽️', t: 'Gastronomie', s: 'Spécialités et cuisines du monde', c: '#B45309' },
-    { id: 'monuments', g: 'fresh', href: 'apps/quiz/index.html?t=monuments', em: '🏛️', t: 'Monuments du monde', s: 'Reconnais-les en photo', c: '#0F766E' },
-    { id: 'animaux',   g: 'fresh', href: 'apps/quiz/index.html?t=animaux',  em: '🐶', t: 'Chiens & chats', s: 'Les races en photo', c: '#9A3412' },
-    { id: 'cinema',    g: 'fresh', href: 'apps/quiz/index.html?t=cinema',   em: '🎬', t: 'Cinéma & BD', s: 'Films, dessins animés, BD', c: '#1E3A8A' }
+    { id: 'monuments', g: 'more',  href: 'apps/quiz/index.html?t=monuments', em: '🏛️', t: 'Monuments du monde', s: 'Reconnais-les en photo', c: '#0F766E' },
+    { id: 'animaux',   g: 'more',  href: 'apps/quiz/index.html?t=animaux',  em: '🐶', t: 'Chiens & chats', s: 'Les races en photo', c: '#9A3412' },
+    { id: 'cinema',    g: 'more',  href: 'apps/quiz/index.html?t=cinema',   em: '🎬', t: 'Cinéma & BD', s: 'Films, dessins animés, BD', c: '#1E3A8A' },
+    { id: 'litterature', g: 'fresh', href: 'apps/quiz/index.html?t=litterature', em: '📚', t: 'Littérature', s: 'Auteurs, personnages, citations', c: '#7C2D12' },
+    { id: 'jeuxvideo', g: 'fresh', href: 'apps/quiz/index.html?t=jeuxvideo', em: '🕹️', t: 'Jeux vidéo', s: 'Mario, Tetris, Minecraft…', c: '#4338CA' },
+    { id: 'france',    g: 'fresh', href: 'apps/quiz/index.html?t=france',   em: '🇫🇷', t: 'La France en photos', s: 'Monuments, paysages, villes', c: '#1D4ED8' },
+    { id: 'oiseaux',   g: 'fresh', href: 'apps/quiz/index.html?t=oiseaux',  em: '🐦', t: 'Oiseaux', s: 'Les oiseaux de France en photo', c: '#15803D' }
   ];
 
   function read(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }

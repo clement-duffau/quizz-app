@@ -22,6 +22,10 @@ Appli Android qui regroupe mes quiz :
 | 🏛️ Monuments du monde | 36 monuments à reconnaître en photo |
 | 🐶 Chiens & chats | 35 races à reconnaître en photo |
 | 🎬 Cinéma & BD | Films, dessins animés, bande dessinée |
+| 📚 Littérature | Auteurs et œuvres, personnages et contes, citations et poésie |
+| 🕹️ Jeux vidéo | Nintendo, grands classiques, jeux d'aujourd'hui |
+| 🇫🇷 La France en photos | 28 monuments, paysages et villes de France |
+| 🐦 Oiseaux | 27 oiseaux de France à reconnaître en photo |
 
 Et aussi :
 
@@ -34,6 +38,7 @@ Et aussi :
   graphique jour après jour, calendrier, progression par quiz, badges et dernières parties.
 - **À revoir** : dans les quiz à modes, les questions ratées reviennent jusqu'à ce qu'elles soient réussies.
 - **Effets sonores** (bonne réponse, erreur, fin de partie) dans tous les quiz, à couper avec le bouton 🔔 en haut à droite.
+- **Photos** dans la correction de nombreuses questions (histoire, sciences, géographie, nature, aviation, mythologie, gastronomie, arts).
 - **Photos** des équipements militaires (Wikimedia Commons, crédits dans le catalogue) et un quiz « Photos seulement ».
 
 ## Installer l'appli sur le téléphone
