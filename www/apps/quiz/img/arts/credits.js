@@ -156,6 +156,11 @@ window.QIMG["arts"] = {
 "l": "Public domain",
 "u": "https://commons.wikimedia.org/wiki/File:Tchaikovsky_by_Reutlinger_(cropped).jpg"
 },
+"rouen-cathedral-monet-series.jpg": {
+"a": "Claude Monet",
+"l": "Public domain",
+"u": "https://commons.wikimedia.org/wiki/File:RouenCathedral_Monet_1894.jpg"
+},
 "the-birth-of-venus.jpg": {
 "a": "Sandro Botticelli",
 "l": "Public domain",
